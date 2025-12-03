@@ -1,173 +1,181 @@
-import ToolLayout from '@/components/tool/ToolLayout';
-import { getToolBySlug } from '@/lib/content';
-import React from 'react';
+'use client';
 
-interface GeneratedOKR {
+import { useMemo, useState } from 'react';
+import Card from '@/components/ui/Card';
+import Section from '@/components/ui/Section';
+import { okrTemplates, OKRDomain, OKRLevel } from './okrTemplates';
+
+type EditableOKR = {
   objective: string;
   keyResults: string[];
-}
-
-const templates: Record<string, GeneratedOKR[]> = {
-  'sales-company': [
-    {
-      objective: 'افزایش رشد پایدار فروش سازمان',
-      keyResults: [
-        'افزایش نرخ تبدیل سرنخ به مشتری به اندازه ۱۵٪',
-        'کاهش چرخه فروش متوسط از ۴۵ روز به ۳۰ روز',
-        'ایجاد دو کانال فروش جدید با بازدهی مشخص',
-      ],
-    },
-  ],
-  'product-team': [
-    {
-      objective: 'تحویل مستمر ارزش محصول با کیفیت بالا',
-      keyResults: [
-        'افزایش رضایت کاربر (CSAT) به بالای ۴.۵',
-        'کاهش زمان چرخه تحویل فیچر به زیر دو هفته',
-        'بهبود نرخ حفظ کاربر ۱۰٪ نسبت به سه‌ماهه قبل',
-      ],
-    },
-  ],
-  'operations-team': [
-    {
-      objective: 'پایداری و بهره‌وری عملیات',
-      keyResults: [
-        'کاهش حوادث با شدت بالا ۲۰٪',
-        'کاهش زمان رفع حادثه متوسط به زیر ۳۰ دقیقه',
-        'افزایش اتوماسیون کارهای تکراری به ۳۰٪',
-      ],
-    },
-  ],
 };
 
-function buildKey(domain: string, level: string) {
-  return `${domain}-${level}`;
+function hydrateTemplates(domain: OKRDomain, level: OKRLevel, goal: string): EditableOKR[] {
+  const selected = okrTemplates[domain][level] ?? [];
+  const safeGoal = goal.trim() || 'هدف مورد نظر';
+  return selected.map((template) => ({
+    objective: template.objective.replace('{goal}', safeGoal),
+    keyResults: template.keyResults.map((kr) => kr.replace('{goal}', safeGoal)),
+  }));
 }
 
-function OKRBuilderTool() {
-  'use client';
+export default function OKRBuilderPage() {
+  const [domain, setDomain] = useState<OKRDomain>('sales');
+  const [level, setLevel] = useState<OKRLevel>('company');
+  const [goal, setGoal] = useState('افزایش رشد پایدار');
+  const [okrs, setOkrs] = useState<EditableOKR[]>(() => hydrateTemplates('sales', 'company', 'افزایش رشد پایدار'));
 
-  const [domain, setDomain] = React.useState('product');
-  const [level, setLevel] = React.useState('team');
-  const [goal, setGoal] = React.useState('بهبود تجربه مشتری در محصول اصلی');
-  const [results, setResults] = React.useState<GeneratedOKR[]>([]);
+  const options = useMemo(
+    () => ({
+      domains: [
+        { value: 'sales', label: 'فروش' },
+        { value: 'marketing', label: 'بازاریابی' },
+        { value: 'operations', label: 'عملیات' },
+        { value: 'product', label: 'محصول' },
+        { value: 'hr', label: 'منابع انسانی' },
+      ] satisfies { value: OKRDomain; label: string }[],
+      levels: [
+        { value: 'company', label: 'شرکت' },
+        { value: 'team', label: 'تیم' },
+        { value: 'individual', label: 'فردی' },
+      ] satisfies { value: OKRLevel; label: string }[],
+    }),
+    [],
+  );
 
-  const generate = () => {
-    const key = buildKey(domain, level);
-    const preset = templates[key] ?? [
-      {
-        objective: `پیشبرد ${goal} در حوزه ${domain}`,
-        keyResults: [
-          'تعریف ۳ شاخص موفقیت قابل اندازه‌گیری',
-          'راه‌اندازی یک داشبورد پیگیری پیشرفت',
-          'برگزاری بازبینی دو هفته‌ای برای هم‌ترازی',
-        ],
-      },
-    ];
-
-    const adapted = preset.map((item) => ({
-      objective: `${item.objective} (${goal})`,
-      keyResults: item.keyResults.map((kr) => kr.replace('هدف', goal)),
-    }));
-
-    setResults(adapted);
+  const regenerate = () => {
+    setOkrs(hydrateTemplates(domain, level, goal));
   };
 
-  React.useEffect(() => {
-    generate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const updateObjective = (index: number, value: string) => {
+    setOkrs((prev) => prev.map((okr, i) => (i === index ? { ...okr, objective: value } : okr)));
+  };
+
+  const updateKeyResult = (okrIndex: number, krIndex: number, value: string) => {
+    setOkrs((prev) =>
+      prev.map((okr, i) =>
+        i === okrIndex ? { ...okr, keyResults: okr.keyResults.map((kr, j) => (j === krIndex ? value : kr)) } : okr,
+      ),
+    );
+  };
+
+  const copyAll = async () => {
+    const block = okrs
+      .map((okr) => {
+        const lines = [`Objective: ${okr.objective}`, ...okr.keyResults.map((kr, idx) => `KR${idx + 1}: ${kr}`)];
+        return lines.join('\n');
+      })
+      .join('\n\n');
+    await navigator.clipboard.writeText(block);
+    alert('OKR ها در کلیپ‌بورد کپی شد.');
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-slate-800">دامنه</label>
-          <select
-            className="w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm"
-            value={domain}
-            onChange={(e) => setDomain(e.target.value)}
+    <div className="space-y-8">
+      <Section
+        title="سازنده OKR"
+        subtitle="دامنه و سطح را انتخاب کنید، هدف را بنویسید و OKR پیشنهادی را دریافت کنید."
+        actions={
+          <button
+            type="button"
+            onClick={copyAll}
+            className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700"
           >
-            <option value="sales">فروش</option>
-            <option value="marketing">بازاریابی</option>
-            <option value="operations">عملیات</option>
-            <option value="product">محصول</option>
-            <option value="hr">منابع انسانی</option>
-          </select>
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-slate-800">سطح</label>
-          <select
-            className="w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm"
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
-          >
-            <option value="company">شرکت</option>
-            <option value="team">تیم</option>
-            <option value="individual">فردی</option>
-          </select>
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-slate-800">هدف کوتاه</label>
-          <input
-            className="w-full rounded border border-slate-200 bg-white px-3 py-2 text-sm"
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-            placeholder="مثلاً افزایش رضایت مشتری"
-          />
-        </div>
-      </div>
-      <button className="rounded-md bg-indigo-600 px-4 py-2 font-semibold text-white" onClick={generate}>
-        تولید OKR
-      </button>
-
-      <div className="space-y-4">
-        {results.map((item, idx) => (
-          <div key={idx} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="flex items-start gap-2">
-              <span className="rounded-full bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-700">O{idx + 1}</span>
-              <textarea
-                className="w-full rounded border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
-                value={item.objective}
-                onChange={(e) =>
-                  setResults((prev) =>
-                    prev.map((r, i) => (i === idx ? { ...r, objective: e.target.value } : r)),
-                  )
-                }
-              />
-            </div>
-            <div className="mt-3 space-y-2">
-              {item.keyResults.map((kr, krIdx) => (
-                <div key={krIdx} className="flex items-start gap-2">
-                  <span className="rounded bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">KR{krIdx + 1}</span>
-                  <textarea
-                    className="w-full rounded border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
-                    value={kr}
-                    onChange={(e) =>
-                      setResults((prev) =>
-                        prev.map((r, i) =>
-                          i === idx
-                            ? { ...r, keyResults: r.keyResults.map((k, j) => (j === krIdx ? e.target.value : k)) }
-                            : r,
-                        ),
-                      )
-                    }
-                  />
-                </div>
+            کپی همه
+          </button>
+        }
+      >
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-800" htmlFor="domain">
+              دامنه
+            </label>
+            <select
+              id="domain"
+              value={domain}
+              onChange={(e) => setDomain(e.target.value as OKRDomain)}
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            >
+              {options.domains.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
-export default async function OKRBuilderPage() {
-  const { meta } = await getToolBySlug('okr-builder');
-  return (
-    <ToolLayout meta={meta}>
-      <OKRBuilderTool />
-    </ToolLayout>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-800" htmlFor="level">
+              سطح
+            </label>
+            <select
+              id="level"
+              value={level}
+              onChange={(e) => setLevel(e.target.value as OKRLevel)}
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            >
+              {options.levels.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2 sm:col-span-1">
+            <label className="text-sm font-semibold text-slate-800" htmlFor="goal">
+              توصیف هدف (جمله کوتاه)
+            </label>
+            <input
+              id="goal"
+              type="text"
+              value={goal}
+              onChange={(e) => setGoal(e.target.value)}
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              placeholder="مثلاً رشد پایدار مشترکان"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-3">
+          <p className="text-xs text-slate-500">الگوها ثابت هستند و بعداً می‌توانند قابل پیکربندی شوند.</p>
+          <button
+            type="button"
+            onClick={regenerate}
+            className="rounded-lg border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50"
+          >
+            ساخت OKR
+          </button>
+        </div>
+      </Section>
+
+      <Section title="خروجی OKR" subtitle="هر خط قابل ویرایش و سپس کپی است">
+        <div className="space-y-4">
+          {okrs.map((okr, okrIndex) => (
+            <Card key={okrIndex} title={`Objective ${okrIndex + 1}`}>
+              <textarea
+                value={okr.objective}
+                onChange={(e) => updateObjective(okrIndex, e.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                rows={2}
+              />
+              <div className="mt-3 space-y-2">
+                {okr.keyResults.map((kr, krIndex) => (
+                  <div key={krIndex} className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-600">KR {krIndex + 1}</label>
+                    <textarea
+                      value={kr}
+                      onChange={(e) => updateKeyResult(okrIndex, krIndex, e.target.value)}
+                      className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                      rows={2}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      </Section>
+    </div>
   );
 }
