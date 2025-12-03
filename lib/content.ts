@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 import matter from 'gray-matter';
 import {
   ContentWithMeta,
+  BaseMeta,
   KitMeta,
   MetricCategory,
   MetricMeta,
@@ -12,7 +13,7 @@ import {
 
 const contentRoot = path.join(process.cwd(), 'content');
 
-async function readMDXFile<T>(filePath: string): Promise<ContentWithMeta<T>> {
+async function readMDXFile<T extends BaseMeta>(filePath: string): Promise<ContentWithMeta<T>> {
   const raw = await fs.readFile(filePath, 'utf8');
   const { data, content } = matter(raw);
   return { meta: data as T, content };

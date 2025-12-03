@@ -1,103 +1,130 @@
-import ToolLayout from '@/components/tool/ToolLayout';
-import { getToolBySlug } from '@/lib/content';
-import React from 'react';
+'use client';
 
-const MATURITY_QUESTIONS = [
-  'اهداف سیستم مکتوب و شفاف هستند.',
-  'مالکیت فرایندها مشخص و مستند است.',
-  'شاخص‌های عملکرد کلیدی (KPI) برای نتایج تعریف شده‌اند.',
-  'حلقه‌های بازخورد دوره‌ای برای یادگیری وجود دارد.',
-  'آزمون سناریو یا مانور بحران برگزار می‌شود.',
-  'داده‌ها برای تصمیم‌گیری در دسترس و قابل اعتماد هستند.',
-  'مدل‌های ذهنی مشترک بین تیم‌ها ساخته شده است.',
-  'وابستگی‌ها و ریسک‌های کلیدی شناسایی شده‌اند.',
-  'الگوهای خطا ثبت و مرور می‌شوند.',
-  'تصمیم‌ها مستند و قابل ردیابی هستند.',
-  'مسیرهای جایگزین یا افزونگی برای خدمات حیاتی وجود دارد.',
-  'فرهنگ به اشتراک‌گذاری دانش تشویق می‌شود.',
-  'پایش سلامت سیستم به صورت مداوم انجام می‌شود.',
-  'تعامل با ذی‌نفعان به صورت ساختارمند انجام می‌شود.',
-  'بهبود مستمر در چرخه‌های کوتاه برنامه‌ریزی می‌شود.',
-  'تجربه کاربر یا مشتری به صورت منظم سنجیده می‌شود.',
-  'تیم‌ها اختیار تصمیم‌گیری در سطح مناسب دارند.',
-  'سیستم مدیریت تغییر و انتشار تعریف شده است.',
-  'سطوح خدمت یا SLA مشخص و پایش می‌شوند.',
-  'ابزارها و مستندات به‌روز هستند.',
+import { useMemo, useState } from 'react';
+import Card from '@/components/ui/Card';
+import Section from '@/components/ui/Section';
+import Tag from '@/components/ui/Tag';
+import { maturityQuestions } from './questions';
+
+type AnswersState = Record<string, number>;
+
+type MaturityLevel = {
+  name: string;
+  range: [number, number];
+  description: string;
+};
+
+const levels: MaturityLevel[] = [
+  { name: 'Level 1: Tribal / Ad-hoc', range: [0, 24], description: 'اتکا بر قهرمان‌های فردی، فرایندها غیررسمی و پیش‌بینی‌ناپذیر.' },
+  { name: 'Level 2: Emerging Processes', range: [25, 49], description: 'چند فرایند تعریف شده است اما اجرا و پیگیری ناپایدار است.' },
+  { name: 'Level 3: Systematic', range: [50, 74], description: 'فرایندها مستند، اندازه‌گیری و به شکل یکنواخت اجرا می‌شوند.' },
+  { name: 'Level 4: Learning & Improving', range: [75, 100], description: 'تیم بهبود مستمر، یادگیری و خودکارسازی را به صورت منظم پیش می‌برد.' },
 ];
 
-function SystemMaturityTool() {
-  'use client';
-
-  const [answers, setAnswers] = React.useState<Record<number, number>>({});
-
-  const updateAnswer = (index: number, value: number) => {
-    setAnswers((prev) => ({ ...prev, [index]: value }));
-  };
-
-  const totalScore = React.useMemo(() => {
-    const values = MATURITY_QUESTIONS.map((_, idx) => answers[idx] ?? 0);
-    const normalized = values.reduce((sum, val) => sum + val, 0) / (MATURITY_QUESTIONS.length * 5);
-    return Math.round(normalized * 100);
-  }, [answers]);
-
-  const level = React.useMemo(() => {
-    if (totalScore < 25) return { title: 'سطح ۱: قبیله‌ای / آتش‌نشانی', desc: 'کارها واکنشی انجام می‌شود و ساختار مشخصی وجود ندارد.' };
-    if (totalScore < 50) return { title: 'سطح ۲: فرایندهای نوپا', desc: 'پاره‌ای از فرایندها تعریف شده‌اند اما پایش و بهبود منظم نیست.' };
-    if (totalScore < 75) return { title: 'سطح ۳: سیستماتیک', desc: 'اهداف، فرایند و سنجه‌ها وجود دارند و بهبود تکرارشونده انجام می‌شود.' };
-    return { title: 'سطح ۴: یادگیرنده', desc: 'یادگیری مستمر، آزمایش و بهبود ساختاری در جریان است.' };
-  }, [totalScore]);
-
-  const suggestedKits = ['risk-management', 'data-governance', 'team-productivity'];
-
-  return (
-    <div className="space-y-6">
-      <form className="space-y-4">
-        {MATURITY_QUESTIONS.map((q, index) => (
-          <div key={index} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-            <p className="text-sm font-medium text-slate-900">{q}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-700">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <label key={value} className="flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1">
-                  <input
-                    type="radio"
-                    name={`q-${index}`}
-                    value={value}
-                    checked={answers[index] === value}
-                    onChange={() => updateAnswer(index, value)}
-                  />
-                  {value}
-                </label>
-              ))}
-              <span className="text-slate-500">۱ = اصلاً برقرار نیست ، ۵ = کاملاً برقرار است</span>
-            </div>
-          </div>
-        ))}
-      </form>
-
-      <div className="rounded-lg border border-indigo-100 bg-white p-4 shadow-sm">
-        <p className="text-sm font-semibold text-indigo-700">امتیاز بلوغ</p>
-        <p className="text-3xl font-bold text-slate-900">{totalScore} / 100</p>
-        <p className="mt-2 text-lg font-semibold text-slate-900">{level.title}</p>
-        <p className="text-sm text-slate-700">{level.desc}</p>
-      </div>
-
-      <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <p className="text-sm font-semibold text-slate-900">کیت‌های پیشنهادی برای ارتقا</p>
-        <ul className="mt-2 list-disc space-y-1 pr-6 text-sm text-slate-700">
-          {suggestedKits.map((kit) => (
-            <li key={kit}>{kit}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
+function initialAnswers(): AnswersState {
+  return maturityQuestions.reduce<AnswersState>((acc, q) => {
+    acc[q.id] = 3;
+    return acc;
+  }, {});
 }
 
-export default async function SystemMaturityPage() {
-  const { meta } = await getToolBySlug('system-maturity');
+export default function SystemMaturityPage() {
+  const [answers, setAnswers] = useState<AnswersState>(initialAnswers);
+  const [submitted, setSubmitted] = useState(false);
+
+  const score = useMemo(() => {
+    const total = maturityQuestions.reduce((sum, q) => sum + (answers[q.id] ?? 0), 0);
+    const max = maturityQuestions.length * 5;
+    return Math.round((total / max) * 100);
+  }, [answers]);
+
+  const level = useMemo(() => levels.find((l) => score >= l.range[0] && score <= l.range[1]), [score]);
+
+  const handleChange = (id: string, value: number) => {
+    setAnswers((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const handleReset = () => {
+    setAnswers(initialAnswers());
+    setSubmitted(false);
+  };
+
   return (
-    <ToolLayout meta={meta}>
-      <SystemMaturityTool />
-    </ToolLayout>
+    <div className="space-y-8">
+      <Section
+        title="ارزیابی بلوغ سیستمی"
+        subtitle="به ۲۰ سوال پاسخ دهید تا سطح بلوغ سازمان را بین Tribal تا Learning & Improving مشاهده کنید."
+        actions={
+          <button
+            type="button"
+            onClick={handleReset}
+            className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            شروع مجدد
+          </button>
+        }
+      >
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            {maturityQuestions.map((question) => (
+              <Card key={question.id} title={question.prompt}>
+                <div className="mt-3 flex items-center gap-3 text-sm text-slate-700">
+                  <label className="text-xs text-slate-500">۱ (ضعیف) تا ۵ (قوی)</label>
+                  <input
+                    type="range"
+                    min={1}
+                    max={5}
+                    step={1}
+                    value={answers[question.id] ?? 1}
+                    onChange={(e) => handleChange(question.id, Number(e.target.value))}
+                    className="flex-1 accent-indigo-600"
+                  />
+                  <span className="w-8 text-center text-sm font-semibold text-indigo-700">{answers[question.id] ?? 1}</span>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="submit"
+              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700"
+            >
+              محاسبه سطح بلوغ
+            </button>
+            <p className="text-xs text-slate-500">مقیاس ۱ تا ۵ است؛ مجموع به مقیاس ۰ تا ۱۰۰ تبدیل می‌شود.</p>
+          </div>
+        </form>
+      </Section>
+
+      {submitted && (
+        <Section title="نتیجه ارزیابی">
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card title="امتیاز کل">
+              <p className="mt-2 text-3xl font-bold text-indigo-700">{score} / 100</p>
+              <p className="text-sm text-slate-600">بر اساس پاسخ‌های شما</p>
+            </Card>
+            <Card title="سطح بلوغ">
+              <p className="mt-2 text-xl font-semibold text-slate-900">{level?.name ?? 'نامشخص'}</p>
+              <p className="text-sm text-slate-600">{level?.description ?? 'برای مشاهده سطح، پرسش‌ها را تکمیل کنید.'}</p>
+            </Card>
+            <Card title="پیشنهادهای بعدی">
+              <p className="mt-2 text-sm text-slate-700">Suggested kits:</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Tag>risk-management</Tag>
+                <Tag>data-governance</Tag>
+                <Tag>team-productivity</Tag>
+              </div>
+              <p className="mt-3 text-xs text-slate-500">این پیشنهادها ثابت هستند و بعدا می‌توانند با منطق هوشمند جایگزین شوند.</p>
+            </Card>
+          </div>
+        </Section>
+      )}
+    </div>
   );
 }
