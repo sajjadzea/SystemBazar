@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Systembazar – system toolkit site",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build && (next export || echo \"next export already handled by output:export\")",
