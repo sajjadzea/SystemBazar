@@ -11,8 +11,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: '#0b1021',
-        surface: '#0f1729',
+        background: '#050816',
+        surface: '#0b1223',
         accent: {
           DEFAULT: '#0bd1c5',
           soft: '#22d3ee',
