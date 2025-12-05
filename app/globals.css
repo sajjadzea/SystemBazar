@@ -2,17 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
-  --foreground: #0f172a;
-  --background: #f8fafc;
-  --muted: #f1f5f9;
-  --border: #e2e8f0;
+  --foreground: #e2e8f0;
+  --background: #0b1021;
+  --muted: #11182d;
+  --border: #1e293b;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  direction: rtl;
 }
 
 a {
@@ -20,13 +25,13 @@ a {
 }
 
 .prose :where(h1, h2, h3, h4) {
-  color: #0f172a;
+  color: #e2e8f0;
 }
 
 .prose :where(p) {
-  color: #334155;
+  color: #cbd5e1;
 }
 
 .prose strong {
-  color: #0f172a;
+  color: #e2e8f0;
 }
