@@ -1,680 +1,300 @@
 'use client';
 
-import React from 'react';
-import AuroraBackground from '@/components/reactbits/aurora-background';
-import SystemBazarHero from '@/components/hero/SystemBazarHero';
+import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import NET from 'vanta/dist/vanta.net.min';
+import * as THREE from 'three';
 
-interface BusinessSystemMapProps {
-  variant?: 'compact' | 'expanded';
-}
-
-const systemNodes = {
-  inputs: { label: 'ورودی‌ها (مشتریان بالقوه، سفارش‌ها)', x: 50, y: 10 },
-  processes: { label: 'فرایندها (فروش، اجرا، پشتیبانی)', x: 85, y: 48 },
-  outcome: { label: 'نتیجه (سود، رشد، رضایت)', x: 50, y: 48 },
-  metrics: { label: 'سنجه‌ها (KPIها)', x: 50, y: 88 },
-  decisions: { label: 'تصمیم‌ها / اقدام اصلاحی', x: 15, y: 48 },
+const fadeUp = {
+  initial: { opacity: 0, y: 32 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.3 },
+  transition: { duration: 0.7, ease: 'easeOut' },
 };
 
-const connections: [keyof typeof systemNodes, keyof typeof systemNodes][] = [
-  ['inputs', 'processes'],
-  ['processes', 'outcome'],
-  ['outcome', 'metrics'],
-  ['metrics', 'decisions'],
-  ['decisions', 'processes'],
-];
-
-const BusinessSystemMap: React.FC<BusinessSystemMapProps> = ({ variant = 'compact' }) => {
-  return (
-    <div className="relative w-full" aria-hidden="true">
-      <svg viewBox="0 0 100 100" className={`w-full ${variant === 'compact' ? 'h-[280px]' : 'h-[360px]'}`}> 
-        <defs>
-          <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0 0L6 3L0 6Z" fill="#0ea5e9" />
-          </marker>
-        </defs>
-
-        {connections.map(([from, to]) => (
-          <line
-            key={`${from}-${to}`}
-            x1={systemNodes[from].x}
-            y1={systemNodes[from].y}
-            x2={systemNodes[to].x}
-            y2={systemNodes[to].y}
-            stroke="#0ea5e9"
-            strokeWidth={variant === 'compact' ? 1.2 : 1.5}
-            strokeOpacity={0.55}
-            markerEnd="url(#arrow)"
-          />
-        ))}
-
-        {Object.entries(systemNodes).map(([id, node]) => (
-          <g key={id}>
-            <rect
-              x={node.x - 18}
-              y={node.y - 7}
-              width={36}
-              height={14}
-              rx={4}
-              fill="#ffffff"
-              stroke="#cbd5e1"
-              strokeWidth={0.7}
-              className="drop-shadow-sm"
-              opacity={0.95}
-            />
-            <text
-              x={node.x}
-              y={node.y + 1}
-              textAnchor="middle"
-              fontSize={variant === 'compact' ? 3.3 : 3.6}
-              fill="#0f172a"
-            >
-              {node.label}
-            </text>
-          </g>
-        ))}
-      </svg>
-    </div>
-  );
+const cardFade = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.5, ease: 'easeOut' },
 };
 
-interface GraphBackgroundProps {
-  children: React.ReactNode;
-}
+const HeroSection: React.FC<{ onPrimaryClick: () => void }> = ({ onPrimaryClick }) => {
+  const vantaRef = useRef<HTMLDivElement | null>(null);
+  const vantaEffect = useRef<any>(null);
 
-/**
- * کانتینر بک‌گراند برای گراف
- * اینجا جاییه که باید یک Background از reactbits.dev رو رندر کنی.
- * گراف روی این بک‌گراند شناور میشه.
- */
-const GraphBackground: React.FC<GraphBackgroundProps> = ({ children }) => {
+  useEffect(() => {
+    if (!vantaEffect.current && vantaRef.current) {
+      vantaEffect.current = NET({
+        el: vantaRef.current,
+        THREE,
+        color: 0x14f1db,
+        backgroundColor: 0x0b1021,
+        points: 14.0,
+        maxDistance: 22.0,
+        spacing: 18.0,
+      });
+    }
+
+    return () => {
+      if (vantaEffect.current) vantaEffect.current.destroy();
+    };
+  }, []);
+
   return (
-    <div className="relative rounded-3xl border border-slate-200 bg-slate-950/[0.02] shadow-sm backdrop-blur-sm overflow-hidden">
-      {/* لایهٔ React Bits Background */}
-      <div className="pointer-events-none absolute inset-0 -z-20">
-        <AuroraBackground className="w-full h-full" />
-      </div>
-
-      {/* لایهٔ گرادیان نرم به‌عنوان Blend روی بک‌گراند */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-sky-50/70 via-slate-50/60 to-indigo-50/70" />
-
-      {/* لایهٔ محتوا (خود گراف) */}
-      <div className="relative z-10 p-4 sm:p-5 lg:p-6">
-        {children}
-      </div>
-    </div>
-  );
-};
-
-const HeroSection: React.FC = () => {
-  return (
-    <section className="py-12 sm:py-16 lg:py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col-reverse gap-10 lg:grid lg:grid-cols-2 lg:items-center">
-          {/* ستون گراف (چپ روی دسکتاپ) */}
-          <div className="lg:pl-8">
-            <GraphBackground>
-              <BusinessSystemMap variant="compact" />
-            </GraphBackground>
-            <p className="mt-4 text-xs sm:text-sm text-slate-500 text-center lg:text-right leading-relaxed">
-              ورودی‌ها → فرایندها → نتیجه؛ نتیجه → سنجه‌ها → تصمیم‌ها → فرایندها. نقشهٔ زندهٔ یک کسب‌وکار که می‌توانی با کیت‌ها و سنجه‌های systembazar آن را بچینی.
+    <section className="relative w-full overflow-hidden bg-background py-10 sm:py-14 lg:py-16">
+      <div ref={vantaRef} className="absolute inset-0" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-background/80 to-background" />
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-4 text-right lg:max-w-2xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-surface/40 px-3 py-1 text-xs text-accent">
+              شبکه‌ای از داده و تصمیم، فقط در Hero
+            </span>
+            <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+              سیستم بسازید؛ موج پنجم را رهبری کنید
+            </h1>
+            <p className="text-base leading-relaxed text-slate-200 sm:text-lg">
+              کتابخانهٔ کیت‌ها، سنجه‌ها و فرآیندهای آماده برای تیم‌هایی که می‌خواهند تصمیم‌سازی داده‌محور را جایگزین آتش‌نشانی روزمره کنند. با Vanta.NET یک هرو غوطه‌ور در شبکهٔ روشن روی پس‌زمینهٔ تاریک.
             </p>
-          </div>
-
-          {/* ستون متن (راست) */}
-          <div className="space-y-6 lg:space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] sm:text-xs text-slate-600">
-              <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              systembazar.ir — کتابخانهٔ کیت‌ها و سنجه‌های سیستم‌سازی برای کسب‌وکارهای ایرانی
-            </div>
-
-            <div className="space-y-4">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-slate-900 leading-tight">
-                سیستم بساز، نه آتش‌نشانی کن
-              </h1>
-              <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl">
-                کیت‌ها و سنجه‌های استاندارد برای تصمیم‌گیری در عصر انفجار داده و هوش مصنوعی؛ سیستمعامل سیستم‌سازی برای کسب‌وکارهای ایرانی.
-              </p>
-            </div>
-
             <div className="flex flex-wrap gap-3">
-              <button className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-slate-800 transition-colors">
-                شروع ارزیابی بلوغ سیستمی
-              </button>
-              <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-900 hover:bg-slate-50 transition-colors">
-                دیدن کتابخانهٔ کیت‌ها
-              </button>
-            </div>
-
-            <div className="flex flex-wrap gap-4 text-[11px] sm:text-xs text-slate-500">
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-                داده‌محور و قابل‌اندازه‌گیری
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
-                طراحی آرام و بدون شلوغی
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                برای مدیران موج پنج تکنولوژی
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-interface ValueCardProps {
-  title: string;
-  description: string;
-  items: string[];
-  icon: React.ReactNode;
-}
-
-const ValueCard: React.FC<ValueCardProps> = ({ title, description, items, icon }) => {
-  return (
-    <div className="group relative flex flex-col rounded-3xl border border-slate-200 bg-white/90 p-5 sm:p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-slate-50 via-white to-sky-50 opacity-0 group-hover:opacity-100 transition-opacity" />
-      <div className="relative flex flex-col gap-4 h-full">
-        <div className="flex items-center justify-between gap-3">
-          <div className="shrink-0 flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-50 text-sky-600 border border-sky-100">
-            {icon}
-          </div>
-          <h3 className="text-base sm:text-lg font-semibold text-slate-900 text-right">
-            {title}
-          </h3>
-        </div>
-        <strong className="text-xs sm:text-sm text-slate-800 text-right leading-relaxed font-semibold">{description}</strong>
-        <ul className="mt-1 list-disc pr-5 space-y-1.5 text-xs sm:text-sm text-slate-600 text-right leading-relaxed">
-          {items.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-};
-
-const IconStack: React.FC = () => (
-  <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-    <rect x="4" y="5" width="16" height="4" rx="1.5" fill="currentColor" opacity="0.25" />
-    <rect x="4" y="10" width="16" height="4" rx="1.5" fill="currentColor" opacity="0.5" />
-    <rect x="4" y="15" width="16" height="4" rx="1.5" fill="currentColor" />
-  </svg>
-);
-
-const IconOutcome: React.FC = () => (
-  <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-    <path
-      d="M5 18c3-3.5 5-5.5 7.5-8.5L19 5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    />
-    <path
-      d="M15.5 5H19v3.5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const IconPeople: React.FC = () => (
-  <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-    <circle cx="16" cy="9" r="3" fill="currentColor" opacity="0.7" />
-    <circle cx="8" cy="11" r="2.6" fill="currentColor" opacity="0.45" />
-    <path
-      d="M5 18c0-2.2 1.7-4 3.8-4h0.4c1.1 0 2.1 0.5 2.8 1.3"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M13 18c0-2.4 1.7-4 3.7-4H17c1.9 0 3.5 1.6 3.5 3.6V19"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-const ValueTriadSection: React.FC = () => {
-  return (
-    <section className="py-10 sm:py-14 lg:py-16 border-y border-slate-100 bg-slate-50/60">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 sm:gap-5 mb-8 sm:mb-10 text-right">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
-            سه‌گانهٔ ارزش systembazar
-          </h2>
-          <p className="max-w-2xl text-sm sm:text-base text-slate-600 leading-relaxed">
-            systembazar.ir کتابخانه‌ای است از کیت‌ها، سنجه‌ها و ابزارهای سیستم‌سازی که کمک می‌کند کسب‌وکارهای ایرانی در عصر موج پنج و انفجار داده،
-            از حالت آتش‌نشانی و بحران دائمی، به سیستم‌سازی آرام و قابل‌پیش‌بینی حرکت کنند.
-          </p>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          <ValueCard
-            title="چه چیزی دریافت می‌کنید؟"
-            description="همه‌چیز برای شروع سیستم‌سازی؛ بدون گم شدن در تئوری‌های انتزاعی و ابزارهای پراکنده."
-            items={[
-              'کیت‌های آماده برای سناریوهای متداول کسب‌وکار (فروش، محتوا، پشتیبانی).',
-              'سنجه‌ها و KPIهای استاندارد و قابل‌تطبیق با شرایط ایران.',
-              'ابزارهای تعاملی برای ارزیابی بلوغ سیستمی و تصمیم‌سازی.',
-              'قالب‌ها، چک‌لیست‌ها و نمونه داشبورد برای شروع سریع.',
-            ]}
-            icon={<IconStack />}
-          />
-          <ValueCard
-            title="نتیجه چیست؟"
-            description="از تصمیم‌گیری واکنشی به تصمیم‌سازی داده‌محور؛ از آشفتگی به وضوح."
-            items={[
-              'کاهش آتش‌نشانی‌های روزمره و وابستگی به افراد کلیدی.',
-              'تصمیم‌گیری سریع‌تر و دقیق‌تر بر اساس سنجه‌های روشن.',
-              'فرایندهای شفاف، مستند و قابل‌تکرار برای تیم.',
-              'جریان دادهٔ منظم برای پیگیری نتیجه و بهبود مداوم.',
-            ]}
-            icon={<IconOutcome />}
-          />
-          <ValueCard
-            title="این برای چه کسانی است؟"
-            description="برای کسانی که می‌خواهند روی سیستم کار کنند، نه فقط درون سیستم."
-            items={[
-              'مدیران و بنیان‌گذاران خسته از آتش‌نشانی و بحران‌های تکراری.',
-              'مسئولان تحول دیجیتال و بهره‌وری در سازمان‌های ایرانی.',
-              'تیم‌هایی که می‌خواهند فرایند و سنجه را مستند، شفاف و تکرارپذیر کنند.',
-              'سازندگان موج پنج که می‌خواهند سیستم‌سازی را به زبان داده پیش ببرند.',
-            ]}
-            icon={<IconPeople />}
-          />
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const SystemMapSection: React.FC = () => {
-  return (
-    <section className="py-12 sm:py-16 lg:py-18">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-3 sm:space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
-            نقشهٔ سیستم
-          </h2>
-          <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-relaxed">
-            تصویری از رابطه بین ورودی‌ها، فرایندها، سنجه‌ها، تصمیم‌ها و خروجی؛ جایی که طراحی و اجرای سیستم، داده و اقدام در یک زبان مشترک برای تصمیم‌گیری جمع می‌شوند.
-          </p>
-        </div>
-
-        <div className="mt-8 sm:mt-10">
-          <GraphBackground>
-            <BusinessSystemMap variant="expanded" />
-          </GraphBackground>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-interface ChecklistItemProps {
-  label: string;
-}
-
-const ChecklistItem: React.FC<ChecklistItemProps> = ({ label }) => (
-  <li className="flex items-start gap-3 text-sm sm:text-base text-slate-700">
-    <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
-      <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" aria-hidden="true">
-        <path
-          d="M5 10.5 8.2 14 15 6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </span>
-    <span>{label}</span>
-  </li>
-);
-
-
-const beforeItems = [
-  'آشفتگی و خاموش کردن آتش‌ها به‌صورت دائم',
-  'تصمیم‌گیری بدون سنجه و فقط با حس و تجربه',
-  'فرایندهای نامشخص و وابسته به افراد کلیدی',
-  'هزینه‌های پنهان، هدررفت زمان و انرژی تیم',
-];
-
-const afterItems = [
-  'وضوح در نقشهٔ سیستم، فرایندها و جریان داده',
-  'سنجه‌های شفاف برای پیگیری تصمیم‌ها و نتایج',
-  'فرایندهای استاندارد و مستند، مستقل از افراد',
-  'کنترل هزینه، افزایش بهره‌وری و یادگیری مستمر سیستم',
-];
-
-const renderList = (items: string[]) => (
-  <ul className="mt-3 space-y-2.5 text-xs sm:text-sm text-slate-700">
-    {items.map((item) => (
-      <li key={item} className="flex items-start gap-2.5">
-        <span className="mt-1 inline-flex h-1.5 w-1.5 rounded-full bg-slate-400" />
-        <span>{item}</span>
-      </li>
-    ))}
-  </ul>
-);
-
-const BeforeAfterComparison: React.FC = () => {
-  return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="rounded-3xl border border-rose-100 bg-rose-50/80 p-5 sm:p-6">
-        <div className="flex items-center justify-between gap-3">
-          <div className="text-sm sm:text-base font-semibold text-rose-700">حالت آتش‌نشانی دائمی</div>
-          <span className="text-[11px] sm:text-xs text-rose-500/80">قبل از systembazar</span>
-        </div>
-        {renderList(beforeItems)}
-      </div>
-
-      <div className="rounded-3xl border border-sky-100 bg-sky-50/90 p-5 sm:p-6">
-        <div className="flex items-center justify-between gap-3">
-          <div className="text-sm sm:text-base font-semibold text-sky-700">بعد از systembazar: سیستم‌سازی آرام و داده‌محور</div>
-          <span className="text-[11px] sm:text-xs text-sky-600/80">حالت پایدار و پیش‌بینی‌پذیر</span>
-        </div>
-        {renderList(afterItems)}
-      </div>
-    </div>
-  );
-};
-
-const AIChallengesSection: React.FC = () => {
-  const items = [
-    'همه ابزار دارند، اما سیستم ندارند',
-    'سنجه درست انتخاب نمی‌شود',
-    'تصمیم‌ها احساسی و لحظه‌ای است',
-    'داده زیاد است، اما ساختار کم است',
-  ];
-
-  return (
-    <section className="py-12 sm:py-16 lg:py-18 bg-slate-50/80">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-right space-y-3 sm:space-y-4 max-w-3xl">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">چالش‌های عصر هوش مصنوعی</h2>
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-            در موج پنج تکنولوژی، ابزارهای هوش مصنوعی برای همه در دسترس‌اند؛ اما مزیت رقابتی واقعی از سیستم‌سازی می‌آید، نه از تعداد ابزارها.
-            systembazar کمک می‌کند این شکاف را بین «ابزار داشتن» و «سیستم داشتن» پر کنید.
-          </p>
-          <div className="text-xs sm:text-sm text-slate-500">قبل / بعد از systembazar</div>
-        </div>
-
-        <BeforeAfterComparison />
-
-        <div className="rounded-3xl border border-slate-200 bg-white/90 p-5 sm:p-6 shadow-sm">
-          <ul className="space-y-3 sm:space-y-4">
-            {items.map((item) => (
-              <ChecklistItem key={item} label={item} />
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-interface CatalogCardProps {
-  title: string;
-  description: string;
-  items: string[];
-}
-
-const CatalogCard: React.FC<CatalogCardProps> = ({ title, description, items }) => {
-  return (
-    <div className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white/90 p-5 sm:p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-      <div className="space-y-3 text-right">
-        <h3 className="text-lg sm:text-xl font-semibold text-slate-900">
-          {title}
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          {description}
-        </p>
-        <ul className="list-disc pr-5 space-y-1.5 text-[11px] sm:text-xs text-slate-500 leading-relaxed">
-          {items.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </div>
-      <button className="mt-4 inline-flex items-center justify-start text-xs sm:text-sm font-medium text-sky-700 group-hover:text-sky-800">
-        <span>دیدن بیشتر</span>
-        <span className="mr-1.5 inline-flex -scale-x-100">
-          {/* arrow right, flipped for RTL */}
-          <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true">
-            <path
-              d="M8 5.5 12.5 10 8 14.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
-      </button>
-    </div>
-  );
-};
-
-const CatalogSection: React.FC = () => {
-  const filters = [
-    'همه',
-    'سیستم‌های بازاریابی',
-    'سیستم‌های عملیات',
-    'سیستم‌های منابع انسانی',
-    'سطح بلوغ پایه',
-    'سطح بلوغ پیشرفته',
-  ];
-
-  return (
-    <section className="py-12 sm:py-16 lg:py-18 bg-slate-50/80">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-right space-y-3 sm:space-y-4 mb-8 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
-            کتابخانهٔ اصلی systembazar
-          </h2>
-          <p className="max-w-2xl text-sm sm:text-base text-slate-600 leading-relaxed">
-            سه ستون اصلی سیستم‌سازی: ابزارها، سنجه‌ها و کیت‌ها. هرکدام می‌توانند مستقل استفاده شوند، اما در کنار هم یک سیستم‌عامل کامل برای مدیریت داده و تصمیم‌گیری می‌سازند.
-          </p>
-        </div>
-
-        <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <input
-              type="text"
-              placeholder="جستجوی سنجه، کیت یا ابزار…"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-right shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100"
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
-            {filters.map((filter) => (
               <button
-                key={filter}
-                className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-slate-600 hover:border-sky-300 hover:text-sky-700 transition"
+                onClick={onPrimaryClick}
+                className="rounded-full bg-accent px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-accent/30 transition hover:bg-accent-soft"
               >
-                {filter}
+                شروع ارزیابی رایگان
               </button>
-            ))}
+              <a
+                href="#features"
+                className="rounded-full border border-accent/40 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:border-accent hover:bg-accent/10"
+              >
+                دیدن مزیت‌ها
+              </a>
+            </div>
+            <div className="flex flex-wrap gap-4 text-xs text-slate-300">
+              <span className="inline-flex items-center gap-2 rounded-full bg-black/30 px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-accent" />
+                همگام با زبان و نیازهای فارسی
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-black/30 px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-accent-soft" />
+                کیت‌های آماده + سنجه‌های استاندارد
+              </span>
+            </div>
           </div>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          <CatalogCard
-            title="ابزارها"
-            description="ابزارهای تعاملی برای ارزیابی بلوغ سیستمی، پایش فرایندها، مدل‌سازی جریان داده و طراحی ساختارهای مدیریتی در عصر هوش مصنوعی."
-            items={['ارزیاب بلوغ سیستمی', 'ماتریس تصمیم‌گیری وزن‌دار', 'نقشه‌کش ساده فرایند (Process Mapper)']}
-          />
-          <CatalogCard
-            title="سنجش‌ها"
-            description="کتابخانه‌ای از KPIها، شاخص‌ها و سنجه‌های استاندارد، متناسب با فضای اقتصادی و سازمانی ایران؛ آماده برای اتصال به داشبوردها و گزارش‌ها."
-            items={['نرخ تبدیل لید به مشتری', 'هزینه جذب مشتری (CAC)', 'نرخ نشت فرایند (Drop-off)']}
-          />
-          <CatalogCard
-            title="کیت‌ها"
-            description="بسته‌های آماده برای سناریوهای پرتکرار: از راه‌اندازی سیستم OKR تا طراحی فرایندهای خدمات و پشتیبانی؛ همراه با قالب‌ها، چک‌لیست‌ها و نقشهٔ سیستم."
-            items={['کیت سیستم‌سازی فروش B2B', 'کیت مدیریت تیکت‌های پشتیبانی', 'کیت سیستم‌سازی تولید محتوا']}
-          />
+          <div className="relative grid w-full max-w-xl gap-4 rounded-3xl border border-accent/20 bg-surface/70 p-6 shadow-glass backdrop-blur">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-slate-200">لایه‌های سیستم شما</p>
+              <span className="rounded-full bg-accent/20 px-3 py-1 text-xs text-accent">Net Visual</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm text-slate-100">
+              <div className="rounded-2xl border border-slate-800/60 bg-black/30 p-4 shadow-inner">
+                <p className="text-xs text-slate-400">ورودی</p>
+                <p className="text-base font-semibold text-white">مشتریان بالقوه + داده</p>
+              </div>
+              <div className="rounded-2xl border border-slate-800/60 bg-black/30 p-4 shadow-inner">
+                <p className="text-xs text-slate-400">فرایند</p>
+                <p className="text-base font-semibold text-white">کیت‌های آماده + اتوماسیون</p>
+              </div>
+              <div className="rounded-2xl border border-slate-800/60 bg-black/30 p-4 shadow-inner">
+                <p className="text-xs text-slate-400">خروجی</p>
+                <p className="text-base font-semibold text-white">رشد قابل‌پیش‌بینی</p>
+              </div>
+              <div className="rounded-2xl border border-slate-800/60 bg-black/30 p-4 shadow-inner">
+                <p className="text-xs text-slate-400">سنجه + اقدام</p>
+                <p className="text-base font-semibold text-white">داشبورد، تصمیم، تکرار</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 };
 
-const CallToActionSection: React.FC = () => {
-  return (
-    <section className="py-12 sm:py-16">
-      <div className="bg-gradient-to-l from-sky-600 via-indigo-600 to-slate-900 text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 lg:py-14 flex flex-col gap-6 sm:gap-7 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-3 sm:space-y-4 text-right max-w-xl">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight">
-              آماده‌اید تا سیستم بسازید؟
-            </h2>
-            <p className="text-sm sm:text-base text-sky-50/90 leading-relaxed">
-              از یک ارزیابی سادهٔ بلوغ سیستمی شروع کنید، شکاف‌ها را ببینید و قدم‌به‌قدم سیستم‌سازی را در کسب‌وکار خود نهادینه کنید.
-            </p>
-          </div>
+const features = [
+  {
+    title: 'کیت‌های عملیاتی',
+    description: 'الگوهای آماده برای فروش، محتوا، پشتیبانی و عملیات با دستورالعمل‌های فارسی.',
+    points: ['چک‌لیست‌های مرحله‌به‌مرحله', 'قالب‌های مستندات و SOP', 'نمونه داشبورد و سنجه‌های قابل استفاده بلافاصله'],
+  },
+  {
+    title: 'سنجه‌های شفاف',
+    description: 'KPIهای استاندارد و بومی‌سازی‌شده برای تصمیم‌گیری بی‌ابهام.',
+    points: ['تعریف دقیق هر سنجه', 'دامنهٔ هدف و هشدار', 'نمودارهای پیشنهادی برای گزارش‌دهی'],
+  },
+  {
+    title: 'ابزار تصمیم‌سازی',
+    description: 'ارزیابی بلوغ سیستمی، اولویت‌بندی اقدامات و نقشهٔ اجرا برای ۶ هفته آینده.',
+    points: ['فرم ارزیابی رایگان', 'مسیر حرکت پیشنهادی', 'کتابخانهٔ اقدام‌های سریع برای تیم'],
+  },
+];
 
-          <div className="flex flex-wrap gap-3 justify-start lg:justify-end">
-            <button className="inline-flex items-center justify-center rounded-full bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-100 transition-colors">
-              شروع ارزیابی رایگان
-            </button>
-            <button className="inline-flex items-center justify-center rounded-full border border-sky-100/80 bg-transparent px-5 sm:px-6 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition-colors">
-              تماس با ما
-            </button>
-          </div>
+const personas = [
+  {
+    title: 'مدیران عملیات و رشد',
+    description: 'نیازمند نظم در فرایند و داده تا تیم بدون اتکا به چند فرد کلیدی کار کند.',
+  },
+  {
+    title: 'کارآفرینان موج پنج',
+    description: 'به دنبال سیستم‌سازی آرام، داده‌محور و سازگار با زبان و فرهنگ بازار ایران.',
+  },
+  {
+    title: 'تیم‌های محصول و پشتیبانی',
+    description: 'می‌خواهند تصمیم‌ها را با سنجه بسنجند و تجربهٔ مشتری را تکرارپذیر کنند.',
+  },
+];
 
-          <p className="text-[11px] sm:text-xs text-sky-100/90 text-right">
-            بدون نیاز به کارت بانکی • نسخهٔ اولیه رایگان است
-          </p>
-        </div>
+const steps = [
+  {
+    title: 'ارزیابی سریع بلوغ',
+    desc: 'با چند پرسش، گلوگاه‌های سیستم را شناسایی کنید و امتیاز موج پنج بگیرید.',
+  },
+  {
+    title: 'چیدمان کیت و سنجه',
+    desc: 'کیت مناسب را انتخاب کنید، سنجه‌ها را در داشبورد بچینید و مالک هر مرحله را مشخص کنید.',
+  },
+  {
+    title: 'راه‌اندازی آرام و تکرار',
+    desc: 'فرایندها را مستند و اجرا کنید، بازخورد بگیرید و در چرخهٔ بهبود مستمر بچرخید.',
+  },
+];
+
+const trustSignals = [
+  {
+    title: 'طراحی برای پس‌زمینهٔ تاریک',
+    desc: 'تمام کارت‌ها با حاشیه، سایه و بلور سبک طراحی شده‌اند تا روی افکت Hero خوانا بمانند.',
+  },
+  {
+    title: 'لهجهٔ بصری فیروزه‌ای',
+    desc: 'تیترها و نشانه‌ها با رنگ Accent هماهنگ شده‌اند تا در تمام سکشن‌ها یکپارچه باشند.',
+  },
+  {
+    title: 'انیمیشن ورود نرم',
+    desc: 'کارت‌ها هنگام اسکرول با fade-in ظاهر می‌شوند تا حرکت چشم را هدایت کنند.',
+  },
+];
+
+const FeaturesSection = () => (
+  <section id="features" className="bg-surface/80 py-14 shadow-[0_-1px_0_rgba(255,255,255,0.04)]">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <motion.div {...fadeUp} className="mb-10 space-y-3 text-right">
+        <p className="text-sm font-semibold text-accent">چرا systembazar</p>
+        <h2 className="text-3xl font-bold text-white">کیت + سنجه + اقدام، مخصوص بازار ایران</h2>
+        <p className="max-w-2xl text-sm leading-relaxed text-slate-300">کارت‌های ویژگی‌ها با پس‌زمینهٔ تاریک و رنگ Accent برای تیترها ساخته شده‌اند تا خوانایی و انسجام بصری حفظ شود.</p>
+      </motion.div>
+      <div className="grid gap-5 md:grid-cols-3">
+        {features.map((feature) => (
+          <motion.div
+            key={feature.title}
+            {...cardFade}
+            className="rounded-3xl border border-slate-800/80 bg-black/30 p-6 shadow-glass backdrop-blur"
+          >
+            <h3 className="text-lg font-semibold text-accent-soft">{feature.title}</h3>
+            <p className="mt-3 text-sm text-slate-200">{feature.description}</p>
+            <ul className="mt-4 space-y-2 text-sm text-slate-300">
+              {feature.points.map((point) => (
+                <li key={point} className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-accent" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
-const Footer: React.FC = () => {
-  const year = new Date().getFullYear();
-
-  return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-xs sm:text-sm text-slate-600">
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold text-slate-900">محصول</h3>
-            <ul className="space-y-1.5">
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  کیت‌ها
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  سنجه‌ها
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  ابزارها
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold text-slate-900">درباره ما</h3>
-            <ul className="space-y-1.5">
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  داستان systembazar
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  همکاری و مشارکت
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold text-slate-900">قانونی</h3>
-            <ul className="space-y-1.5">
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  شرایط استفاده
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  حریم خصوصی
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold text-slate-900">شبکه‌های اجتماعی</h3>
-            <ul className="space-y-1.5">
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  تلگرام
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  لینکدین
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-slate-900">
-                  اینستاگرام
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-[11px] sm:text-xs text-slate-500">
-          <span>© {year} systembazar.ir — همهٔ حقوق محفوظ است.</span>
-          <span>systembazar = سیستم‌عامل سیستم‌سازی برای عصر انفجار داده‌ها</span>
-        </div>
+const PersonasSection = () => (
+  <section className="bg-background py-14">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <motion.div {...fadeUp} className="mb-8 space-y-2 text-right">
+        <p className="text-sm font-semibold text-accent">برای چه کسانی؟</p>
+        <h2 className="text-2xl font-bold text-white">پرسوناهای اصلی systembazar</h2>
+      </motion.div>
+      <div className="grid gap-4 md:grid-cols-3">
+        {personas.map((persona) => (
+          <motion.div
+            key={persona.title}
+            {...cardFade}
+            className="rounded-3xl border border-slate-800 bg-surface/70 p-5 shadow-glass"
+          >
+            <h3 className="text-lg font-semibold text-accent-soft">{persona.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">{persona.description}</p>
+          </motion.div>
+        ))}
       </div>
-    </footer>
-  );
-};
+    </div>
+  </section>
+);
 
-const SystemBazarLandingPage: React.FC = () => {
+const ProcessSection = React.forwardRef<HTMLElement>((_, ref) => (
+  <section ref={ref} id="process" className="bg-surface/90 py-14">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <motion.div {...fadeUp} className="mb-10 space-y-2 text-right">
+        <p className="text-sm font-semibold text-accent">مسیر اجرا</p>
+        <h2 className="text-2xl font-bold text-white">فرآیند سه‌مرحله‌ای برای شروع</h2>
+        <p className="text-sm text-slate-300">دکمهٔ Hero به این بخش اسکرول می‌کند؛ کارت‌ها با انیمیشن fade-in ظاهر می‌شوند.</p>
+      </motion.div>
+      <div className="grid gap-4 md:grid-cols-3">
+        {steps.map((step, index) => (
+          <motion.div
+            key={step.title}
+            {...cardFade}
+            className="relative rounded-3xl border border-accent/25 bg-black/40 p-6 shadow-glass"
+          >
+            <span className="absolute -top-3 left-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/25 text-lg font-bold text-accent">
+              {index + 1}
+            </span>
+            <h3 className="mb-3 text-lg font-semibold text-white">{step.title}</h3>
+            <p className="text-sm leading-relaxed text-slate-200">{step.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+));
+ProcessSection.displayName = 'ProcessSection';
+
+const TrustSection = () => (
+  <section className="bg-background py-14">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <motion.div {...fadeUp} className="mb-8 space-y-2 text-right">
+        <p className="text-sm font-semibold text-accent">هماهنگی بصری</p>
+        <h2 className="text-2xl font-bold text-white">کارت‌های قابل‌خواندن روی پس‌زمینهٔ تاریک</h2>
+      </motion.div>
+      <div className="grid gap-4 md:grid-cols-3">
+        {trustSignals.map((signal) => (
+          <motion.div
+            key={signal.title}
+            {...cardFade}
+            className="rounded-3xl border border-slate-800 bg-surface/80 p-5 shadow-glass"
+          >
+            <h3 className="text-lg font-semibold text-accent-soft">{signal.title}</h3>
+            <p className="mt-2 text-sm text-slate-200">{signal.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+export default function HomePage() {
+  const processRef = useRef<HTMLElement | null>(null);
+
+  const scrollToProcess = () => {
+    processRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased flex flex-col"
-    >
-      <main className="flex-1">
-        <SystemBazarHero />
-        <HeroSection />
-        <ValueTriadSection />
-        <SystemMapSection />
-        <AIChallengesSection />
-        <CatalogSection />
-        <CallToActionSection />
-      </main>
-      <Footer />
+    <div className="flex w-full flex-col">
+      <HeroSection onPrimaryClick={scrollToProcess} />
+      <FeaturesSection />
+      <PersonasSection />
+      <ProcessSection ref={processRef} />
+      <TrustSection />
     </div>
   );
-};
-
-export default SystemBazarLandingPage;
+}

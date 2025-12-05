@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -7,7 +9,25 @@ module.exports = {
     './content/**/*.{mdx,md}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: '#0b1021',
+        surface: '#0f1729',
+        accent: {
+          DEFAULT: '#0bd1c5',
+          soft: '#22d3ee',
+          muted: '#6ee7e1',
+        },
+      },
+      boxShadow: {
+        glass: '0 30px 80px -40px rgba(0,0,0,0.75)',
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant('rtl', '[dir="rtl"] &');
+      addVariant('ltr', '[dir="ltr"] &');
+    }),
+  ],
 };
