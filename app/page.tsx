@@ -76,7 +76,7 @@ const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
 
   return (
     <div
-      className={['relative', className].filter(Boolean).join(' ')}
+      className={["relative", className].filter(Boolean).join(" ")}
       aria-hidden="true"
     >
       <svg
@@ -86,12 +86,6 @@ const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
         preserveAspectRatio="xMidYMid meet"
       >
         <defs>
-          <radialGradient id="graphBgGradient" cx="50%" cy="0%" r="100%">
-            <stop offset="0%" stopColor="#e0f2fe" stopOpacity="0.9" />
-            <stop offset="45%" stopColor="#f8fafc" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#f1f5f9" stopOpacity="1" />
-          </radialGradient>
-
           <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="coloredBlur" />
             <feMerge>
@@ -100,38 +94,6 @@ const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
             </feMerge>
           </filter>
         </defs>
-
-        <rect
-          x={0}
-          y={0}
-          width={width}
-          height={height}
-          rx={24}
-          fill="url(#graphBgGradient)"
-        />
-
-        {/* soft backdrop circles */}
-        <circle
-          cx={width * 0.2}
-          cy={height * 0.2}
-          r={60 * scale}
-          fill="#e0f2fe"
-          opacity={0.45}
-        />
-        <circle
-          cx={width * 0.8}
-          cy={height * 0.3}
-          r={70 * scale}
-          fill="#ddd6fe"
-          opacity={0.35}
-        />
-        <circle
-          cx={width * 0.5}
-          cy={height * 0.85}
-          r={80 * scale}
-          fill="#bbf7d0"
-          opacity={0.25}
-        />
 
         {GRAPH_EDGES.map(([sourceId, targetId], index) => {
           const source = findNode(sourceId);
@@ -187,7 +149,7 @@ const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
                 textAnchor="middle"
                 fontSize={variant === 'compact' ? 11 : 13}
                 fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-                fill={isHovered ? '#0f172a' : '#0f172a'}
+                fill="#0f172a"
               >
                 {node.label}
               </text>
@@ -199,25 +161,58 @@ const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
   );
 };
 
+interface GraphBackgroundProps {
+  children: React.ReactNode;
+}
+
+/**
+ * کانتینر بک‌گراند برای گراف
+ * اینجا جاییه که باید یک Background از reactbits.dev رو رندر کنی.
+ * گراف روی این بک‌گراند شناور میشه.
+ */
+const GraphBackground: React.FC<GraphBackgroundProps> = ({ children }) => {
+  return (
+    <div className="relative rounded-3xl border border-slate-200 bg-slate-950/[0.02] shadow-sm backdrop-blur-sm overflow-hidden">
+      {/* لایهٔ React Bits Background */}
+      <div className="pointer-events-none absolute inset-0 -z-20">
+        {/*
+          TODO:
+          بعد از اینکه یکی از بک‌گراندهای React Bits رو با jsrepo/shadcn اضافه کردی،
+          کامپوننتش رو اینجا رندر کن. مثلا:
+
+          <AuroraBackground className="w-full h-full" />
+
+          یا هر Background دیگری که از https://reactbits.dev/backgrounds انتخاب می‌کنی.
+        */}
+      </div>
+
+      {/* لایهٔ گرادیان نرم به‌عنوان Blend روی بک‌گراند */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-sky-50/70 via-slate-50/60 to-indigo-50/70" />
+
+      {/* لایهٔ محتوا (خود گراف) */}
+      <div className="relative z-10 p-4 sm:p-5 lg:p-6">
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const HeroSection: React.FC = () => {
   return (
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col-reverse gap-10 lg:grid lg:grid-cols-2 lg:items-center">
-          {/* Graph column (left on desktop) */}
+          {/* ستون گراف (چپ روی دسکتاپ) */}
           <div className="lg:pl-8">
-            <div className="relative rounded-3xl border border-slate-200 bg-white/80 shadow-sm backdrop-blur-sm p-4 sm:p-5 lg:p-6 overflow-hidden">
-              <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-sky-50 via-slate-50 to-indigo-50" />
-              <div className="relative">
-                <InteractiveForceGraph variant="compact" />
-              </div>
-            </div>
+            <GraphBackground>
+              <InteractiveForceGraph variant="compact" />
+            </GraphBackground>
             <p className="mt-4 text-xs sm:text-sm text-slate-500 text-center lg:text-right">
               شبکهٔ آرام و هوشمند بین «کیت‌ها»، «سنجش‌ها»، «ابزارها» و «نظریه» برای ساختن سیستم‌های زنده.
             </p>
           </div>
 
-          {/* Text column (right) */}
+          {/* ستون متن (راست) */}
           <div className="space-y-6 lg:space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] sm:text-xs text-slate-600">
               <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -366,19 +361,31 @@ const ValueTriadSection: React.FC = () => {
           <ValueCard
             title="چه چیزی دریافت می‌کنید؟"
             description="همه‌چیز برای شروع سیستم‌سازی؛ بدون گم شدن در تئوری‌های انتزاعی و ابزارهای پراکنده."
-            items={['کیت‌های آماده برای سناریوهای متداول کسب‌وکار', 'سنجه‌ها و KPIهای استاندارد و قابل تطبیق با ایران', 'ابزارهای اندازه‌گیری و ارزیابی بلوغ سیستمی']}
+            items={[
+              'کیت‌های آماده برای سناریوهای متداول کسب‌وکار',
+              'سنجه‌ها و KPIهای استاندارد و قابل تطبیق با ایران',
+              'ابزارهای اندازه‌گیری و ارزیابی بلوغ سیستمی',
+            ]}
             icon={<IconStack />}
           />
           <ValueCard
             title="نتیجه چیست؟"
             description="از تصمیم‌گیری واکنشی به تصمیم‌سازی داده‌محور؛ از آشفتگی به وضوح."
-            items={['کاهش آشفتگی و آتش‌نشانی‌های روزمره', 'تصمیم‌گیری سریع‌تر و دقیق‌تر بر اساس سنجه‌های روشن', 'ساختاردهی به فرایندها، نقش‌ها و جریان داده']}
+            items={[
+              'کاهش آشفتگی و آتش‌نشانی‌های روزمره',
+              'تصمیم‌گیری سریع‌تر و دقیق‌تر بر اساس سنجه‌های روشن',
+              'ساختاردهی به فرایندها، نقش‌ها و جریان داده',
+            ]}
             icon={<IconOutcome />}
           />
           <ValueCard
             title="این برای چه کسانی است؟"
             description="برای کسانی که می‌خواهند روی سیستم کار کنند، نه فقط درون سیستم."
-            items={['مدیران کسب‌وکار و واحدهای عملیاتی', 'مشاوران سیستم‌ها و تحول دیجیتال', 'کارآفرینان و سازندگان در موج پنج تکنولوژی']}
+            items={[
+              'مدیران کسب‌وکار و واحدهای عملیاتی',
+              'مشاوران سیستم‌ها و تحول دیجیتال',
+              'کارآفرینان و سازندگان در موج پنج تکنولوژی',
+            ]}
             icon={<IconPeople />}
           />
         </div>
@@ -400,8 +407,10 @@ const SystemMapSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="mt-8 sm:mt-10 rounded-3xl border border-slate-200 bg-white/90 shadow-sm p-4 sm:p-6 lg:p-7">
-          <InteractiveForceGraph variant="expanded" />
+        <div className="mt-8 sm:mt-10">
+          <GraphBackground>
+            <InteractiveForceGraph variant="expanded" />
+          </GraphBackground>
         </div>
       </div>
     </section>
@@ -493,7 +502,7 @@ const BeforeAfterSection: React.FC = () => {
 
   return (
     <section className="py-12 sm:py-16 lg:py-18">
-      <div className="max-w-6xl mx.auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-right space-y-3 sm:space-y-4 mb-8 sm:mb-10">
           <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
             قبل و بعد از systembazar
