@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import AuroraBackground from '@/components/reactbits/aurora-background';
 
 type GraphNode = {
   id: string;
@@ -175,15 +176,7 @@ const GraphBackground: React.FC<GraphBackgroundProps> = ({ children }) => {
     <div className="relative rounded-3xl border border-slate-200 bg-slate-950/[0.02] shadow-sm backdrop-blur-sm overflow-hidden">
       {/* لایهٔ React Bits Background */}
       <div className="pointer-events-none absolute inset-0 -z-20">
-        {/*
-          TODO:
-          بعد از اینکه یکی از بک‌گراندهای React Bits رو با jsrepo/shadcn اضافه کردی،
-          کامپوننتش رو اینجا رندر کن. مثلا:
-
-          <AuroraBackground className="w-full h-full" />
-
-          یا هر Background دیگری که از https://reactbits.dev/backgrounds انتخاب می‌کنی.
-        */}
+        <AuroraBackground className="w-full h-full" />
       </div>
 
       {/* لایهٔ گرادیان نرم به‌عنوان Blend روی بک‌گراند */}
