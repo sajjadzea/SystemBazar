@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import AuroraBackground from '@/components/reactbits/aurora-background';
+import SystemBazarHero from '@/components/hero/SystemBazarHero';
 
 type GraphNode = {
   id: string;
@@ -731,6 +732,7 @@ const SystemBazarLandingPage: React.FC = () => {
       className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased flex flex-col"
     >
       <main className="flex-1">
+        <SystemBazarHero />
         <HeroSection />
         <ValueTriadSection />
         <SystemMapSection />
