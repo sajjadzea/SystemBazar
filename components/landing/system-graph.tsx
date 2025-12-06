@@ -16,7 +16,7 @@ type SystemLink = {
 };
 
 const initialNodes: SystemNode[] = [
-  { id: 'kits', label: 'کیت‌ها', x: 160, y: 40 },
+  { id: 'kits', label: 'بسته‌های سیستم', x: 160, y: 40 },
   { id: 'metrics', label: 'سنجه‌ها', x: 40, y: 130 },
   { id: 'tools', label: 'ابزارها', x: 280, y: 130 },
   { id: 'theory', label: 'نظریه سیستم', x: 160, y: 210 },

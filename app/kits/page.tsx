@@ -7,7 +7,7 @@ export default async function KitsPage() {
   const kits = await getAllKits();
 
   return (
-    <Section title="کیت‌های سیستم‌سازی" subtitle="کیت‌ها را مرور کنید و برای کار خود انتخاب کنید">
+    <Section title="بسته‌های سیستم‌سازی (System Pack)" subtitle="بسته‌ها را مرور کنید و بستهٔ مناسب تیم‌تان برای دیدن و سنجش سیستم را انتخاب کنید">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {kits.map((kit) => (
           <Card key={kit.slug} title={kit.title} description={kit.summary} href={`/kits/${kit.slug}`}>
