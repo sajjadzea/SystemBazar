@@ -73,18 +73,30 @@ const steps = [
 ];
 
 const measurementQuotes = [
-  { text: 'What gets measured gets managed.', name: 'Peter Drucker' },
   {
-    text: 'The most important numbers for management are unknown or unknowable, yet good managers still act on them.',
+    translation:
+      'بخش مهمی از مهم‌ترین عددهای مدیریتی ناشناخته یا حتی غیرقابل‌سنجش‌اند؛ با این حال، مدیران خوب مجبورند همچنان بر اساس آن‌ها عمل کنند.',
     name: 'W. Edwards Deming',
+    original:
+      'The most important numbers for management are unknown or unknowable, yet good managers still act on them.',
   },
   {
-    text: 'You can’t control a system, but you can redesign information and incentives so the system changes its own behavior.',
-    name: 'Donella Meadows',
+    translation: 'هرچیزی را که درست بسنجیم، می‌توانیم درست مدیریت کنیم.',
+    name: 'Peter Drucker',
+    original: 'What gets measured gets managed.',
   },
   {
-    text: 'Balanced Scorecard turns strategy into a daily language that people can see, measure, and improve.',
+    translation:
+      'کارت امتیازی متوازن، استراتژی را به زبانی روزمره تبدیل می‌کند؛ زبانی که آدم‌ها می‌توانند آن را ببینند، بسنجند و بهترش کنند.',
     name: 'Robert Kaplan',
+    original: 'Balanced Scorecard turns strategy into a daily language that people can see, measure, and improve.',
+  },
+  {
+    translation:
+      'نمی‌توانی یک سیستم را مستقیم کنترل کنی؛ اما می‌توانی اطلاعات و مشوق‌ها را طوری طراحی کنی که خودش رفتار خودش را عوض کند.',
+    name: 'Donella Meadows',
+    original:
+      'You can’t control a system, but you can redesign information and incentives so the system changes its own behavior.',
   },
 ];
 
@@ -374,8 +386,11 @@ export default function LandingPage() {
                 key={quote.name}
                 className="flex flex-col gap-3 rounded-2xl border border-slate-800/70 bg-black/30 p-5 text-right shadow-inner transition hover:border-accent/40 hover:bg-black/40"
               >
-                <p className="text-base leading-relaxed text-slate-100">{quote.text}</p>
-                <span className="text-xs text-slate-400">{quote.name}</span>
+                <div className="flex flex-col gap-2">
+                  <p className="text-sm md:text-base leading-relaxed text-right">{quote.translation}</p>
+                  <p className="text-xs text-slate-400 text-right">{quote.name}</p>
+                  <p className="mt-2 text-[11px] text-slate-500 text-left" dir="ltr">{quote.original}</p>
+                </div>
               </div>
             ))}
           </div>
