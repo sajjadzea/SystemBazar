@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import NET from 'vanta/dist/vanta.net.min';
 import * as THREE from 'three';
 
@@ -418,6 +419,72 @@ export default function LandingPage() {
                 </a>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="system-types" className="w-full border-t border-slate-800 bg-slate-950/60">
+        <div className="mx-auto max-w-5xl space-y-6 px-4 py-12 text-right md:py-16">
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-emerald-400">با چه نوع سیستم‌هایی کار می‌کنیم؟</p>
+            <h2 className="text-3xl font-bold text-white">اول نوع سیستم‌ات را بشناس، بعد تصمیم بگیر چه چیزی را اندازه بگیری.</h2>
+            <p className="text-sm leading-relaxed text-slate-200">
+              بخش زیادی از خطای اندازه‌گیری در سازمان‌های ایرانی از همین‌جا شروع می‌شود:{' '}
+              نمی‌دانیم با سیستم انسانی طرفیم، اقتصادی، داده‌ای یا انسان–ماشین؛ بعد KPI اشتباه انتخاب می‌کنیم.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-3 rounded-xl border border-slate-800 bg-slate-900/60 p-5 transition duration-200 hover:border-emerald-500/40 hover:bg-slate-900">
+              <h3 className="text-lg font-semibold text-white">سیستم‌های انسانی و سازمانی</h3>
+              <p className="text-sm leading-relaxed text-slate-200">
+                تیم، واحد، شرکت، شبکه‌های غیررسمی.
+                <br />
+                اینجا با انگیزه، اعتماد، تعارض و ظرفیت تصمیم‌گیری طرفیم.
+                <br />
+                سنجه‌ها: تعهد، همکاری، اصطکاک، فرسودگی.
+              </p>
+            </div>
+            <div className="space-y-3 rounded-xl border border-slate-800 bg-slate-900/60 p-5 transition duration-200 hover:border-emerald-500/40 hover:bg-slate-900">
+              <h3 className="text-lg font-semibold text-white">سیستم‌های اقتصادی و بیزنسی</h3>
+              <p className="text-sm leading-relaxed text-slate-200">
+                مدل درآمد، زنجیره تأمین، قیمت‌گذاری، سبد محصول.
+                <br />
+                از مغازه محلی تا هلدینگ.
+                <br />
+                سنجه‌ها: سودآوری، ریسک، جریان نقدی، پایداری درآمد.
+              </p>
+            </div>
+            <div className="space-y-3 rounded-xl border border-slate-800 bg-slate-900/60 p-5 transition duration-200 hover:border-emerald-500/40 hover:bg-slate-900">
+              <h3 className="text-lg font-semibold text-white">سیستم‌های داده، اطلاعات و دیجیتال</h3>
+              <p className="text-sm leading-relaxed text-slate-200">
+                داشبوردها، پایگاه‌های داده، CRM، فرایندهای دیجیتال.
+                <br />
+                جایی که داده زیاد است، ولی لزوماً دید نداریم.
+                <br />
+                سنجه‌ها: کیفیت داده، پوشش داده، سرعت دسترسی، استفاده واقعی.
+              </p>
+            </div>
+            <div className="space-y-3 rounded-xl border border-slate-800 bg-slate-900/60 p-5 transition duration-200 hover:border-emerald-500/40 hover:bg-slate-900">
+              <h3 className="text-lg font-semibold text-white">سیستم‌های انسان–ماشین و سایبر–فیزیکی</h3>
+              <p className="text-sm leading-relaxed text-slate-200">
+                مرکز تماس، اتوماسیون اداری، خط تولید، شبکه آب و انرژی.
+                <br />
+                جایی که انسان، ماشین و سنسور با هم کار می‌کنند.
+                <br />
+                سنجه‌ها: خطا، قطعی، بهره‌وری، ایمنی و اعتماد.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <Link
+              href="/systems-map"
+              className="inline-flex items-center gap-1 text-sm text-emerald-400 transition hover:text-emerald-300"
+            >
+              <span>مشاهده نقشه کامل انواع سیستم‌ها و سنجه‌هایشان</span>
+              <span aria-hidden>↗</span>
+            </Link>
           </div>
         </div>
       </section>
