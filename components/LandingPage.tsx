@@ -114,19 +114,22 @@ const pillars = [
 
 const outputs = [
   {
-    title: 'بسته سیستم آماده',
-    description: 'مثلاً «مدیریت ریسک پروژه»: هدف، ساختار جلسات، فرایند هشدار و اقدام، سنجهٔ کنترل ریسک.',
-    badge: 'نمونه بسته',
+    title: 'نقشهٔ سیستم',
+    description:
+      'سیستم را روی یک صفحه می‌بینید؛ حلقه‌ها، گره‌ها و عوامل اصلی. این نقشه می‌شود زبان مشترک جلسه بعدی شما.',
+    badge: 'زبان مشترک',
   },
   {
-    title: 'Metric با دامنهٔ هدف',
-    description: 'تعریف Metric، دامنهٔ مطلوب، سیگنال خطر و روش جمع‌آوری داده برای تیم محصول.',
-    badge: 'نمونه سنجه',
+    title: 'برد سنجه‌ها',
+    description:
+      'لیستی شفاف از سنجه‌های مهم، با تعریف، هدف و منبع داده. می‌دانید چه چیزی را باید اندازه بگیرید و چه چیزهایی فقط سر و صدا هستند.',
+    badge: 'تعریف سنجه',
   },
   {
-    title: 'Snapshot داشبورد',
-    description: 'یک نمای ساده از وضعیت سیستم + توصیهٔ بعدی تا جلسهٔ بعدی تصمیم شفاف باشد.',
-    badge: 'نمونه گزارش',
+    title: 'چرخهٔ بازخورد و یادگیری',
+    description:
+      'برنامه‌ای ساده برای مرور دوره‌ای داده‌ها و تصمیم‌ها؛ تا سیستم‌تان هر ماه کمی بهتر شود، نه فقط گزارش‌ها بیشتر شوند.',
+    badge: 'بهبود مستمر',
   },
 ];
 
@@ -408,7 +411,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 space-y-3 text-right">
             <p className="text-sm font-semibold text-accent">نمونه خروجی</p>
-            <h2 className="text-3xl font-bold text-white">خروجی‌های واقعی systembazar چه شکلی‌اند؟</h2>
+            <h2 className="text-3xl font-bold text-white">بعد از کار با systembazar، چه چیزهایی یاد می‌گیرید و می‌سازید؟</h2>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {outputs.map((output) => (
@@ -417,7 +420,18 @@ export default function LandingPage() {
                   <span className="text-lg font-semibold text-white">{output.title}</span>
                   <span className="rounded-full bg-accent/15 px-3 py-1 text-xs text-accent">{output.badge}</span>
                 </div>
-                <div className="mb-4 h-32 rounded-2xl border border-dashed border-accent/30 bg-black/30" aria-hidden />
+                <div className="mb-4 rounded-2xl border border-dashed border-accent/30 bg-black/30 p-4" aria-hidden>
+                  <div className="mb-3 h-2 w-24 rounded-full bg-accent/50" />
+                  <div className="mb-2 flex gap-2">
+                    <div className="h-16 w-full rounded-xl border border-accent/20 bg-white/5" />
+                    <div className="h-16 w-14 rounded-xl border border-accent/20 bg-white/5" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-10 rounded-full bg-accent/40" />
+                    <div className="h-2 w-20 rounded-full bg-accent-soft/60" />
+                    <div className="h-2 w-8 rounded-full bg-slate-600/70" />
+                  </div>
+                </div>
                 <p className="text-sm leading-relaxed text-slate-200">{output.description}</p>
               </div>
             ))}
