@@ -27,12 +27,13 @@ export function HeroSystembazar() {
             <span>سیستم بساز، نه آتش‌نشانی کن</span>
             <br />
             <span className='text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-rose-500'>
-              کیت، سنجه و ابزار برای کسب‌وکار ایرانی
+              بسته سیستم‌سازی (System Pack)، سنجه و ابزار برای کسب‌وکار ایرانی
             </span>
           </h1>
 
           <p className='max-w-xl text-sm md:text-base leading-relaxed text-slate-600'>
-            systembazar کتابخانه‌ای از کیت‌های سیستم‌سازی و سنجه‌های استاندارد است تا تصمیم‌گیری و مدیریت در کسب‌وکارهای کوچک و متوسط ایرانی از حس و تجربه به سیستم قابل اندازه‌گیری تبدیل شود.
+            systembazar کتابخانه‌ای از بسته‌های سیستم‌سازی و سنجه‌های استاندارد است تا شما تصمیم و مدیریت را از حس به سیستم قابل اندازه‌گیری برسانید.
+            هر بسته سیستم به تیم‌تان کمک می‌کند جریان‌ها را ببینید، سنجه درست بسازید و روی بازخورد تصمیم بگیرید.
           </p>
 
           <div className='grid gap-3 text-sm text-slate-700 sm:grid-cols-3 sm:gap-4'>
@@ -45,7 +46,7 @@ export function HeroSystembazar() {
             <div className='rounded-lg bg-white/80 p-3 shadow-sm ring-1 ring-slate-200/70'>
               <div className='mb-1 font-semibold'>چه می‌گیرید؟</div>
               <div className='text-xs text-slate-600'>
-                کیت‌های آماده، سنجه‌های تعریف‌شده و ابزارهای تصمیم‌یار که می‌شود مستقیم در کسب‌وکار ایرانی استفاده‌شان کرد.
+                بسته‌های سیستم آماده، سنجه‌های تعریف‌شده و ابزارهای تصمیم‌یار که می‌شود مستقیم در کسب‌وکار ایرانی استفاده‌شان کرد.
               </div>
             </div>
             <div className='rounded-lg bg-white/80 p-3 shadow-sm ring-1 ring-slate-200/70'>
@@ -65,7 +66,7 @@ export function HeroSystembazar() {
                 'transition-colors'
               )}
             >
-              دیدن کیت‌ها
+              دیدن بسته‌های سیستم
             </a>
             <a
               href='#metrics'
@@ -90,7 +91,7 @@ export function HeroSystembazar() {
             <div className='relative space-y-4'>
               <p className='text-xs font-semibold text-slate-300/80'>نمای سیستم</p>
               <p className='text-sm text-slate-200/90'>
-                هر گره یک کیت است و هر خط یک سنجه یا ابزار مشترک. می‌توانید گره‌ها را با موس جابجا کنید و شبکهٔ systembazar را لمس کنید.
+                هر گره یک بسته سیستم است و هر خط یک سنجه یا ابزار مشترک. می‌توانید گره‌ها را جابجا کنید و ببینید سیستم و سنجه‌ها چطور برای تصمیم‌گیری به هم وصل می‌شوند.
               </p>
               <div className='mt-4 rounded-xl border border-slate-700/80 bg-slate-900/80 p-3'>
                 <SystemGraph className='h-56 w-full' />

@@ -5,9 +5,9 @@ import NET from 'vanta/dist/vanta.net.min';
 import * as THREE from 'three';
 
 const heroHighlights = [
-  'بازار System Kit با سناریوهای آمادهٔ اجرا.',
+  'بازار بسته‌های سیستم‌سازی با سناریوی آمادهٔ اجرا.',
   'موج پنج: انسان + ماشین + سیستم، نه فقط ابزار.',
-  'هر کیت = هدف، ساختار، سنجه، بازخورد و اقدام.',
+  'هر بسته سیستم = هدف، ساختار، سنجه، بازخورد و اقدام.',
 ];
 
 const valueProps = [
@@ -17,7 +17,7 @@ const valueProps = [
   },
   {
     title: 'اجرای سریع در موج پنج',
-    description: 'کیت‌های آماده با چک‌لیست، الگو و اتوماسیون سبک برای تیم‌های ایرانی.',
+    description: 'بسته‌های سیستم آماده با چک‌لیست، سنجه روشن و اتوماسیون سبک برای تیم‌های ایرانی.',
   },
   {
     title: 'رشد قابل‌پیش‌بینی',
@@ -33,17 +33,17 @@ const waveReasons = [
 ];
 
 const whatIsSystemBazar = [
-  'بازار System Kits: هر کیت یک بستهٔ کامل برای یک مسئلهٔ مشخص (هدف، ساختار، فرایند، سنجه، اقدام).',
-  'Metrics Library: سنجه‌های انسانی، فنی و سیستمی با تعریف، دامنهٔ هدف و روش اندازه‌گیری.',
-  'System Tools: ارزیابی بلوغ سیستمی، سازندهٔ OKR، ماتریس تصمیم و ابزارهای نقشه‌برداری.',
-  'تفاوت با داشبورد و KPI Tool: ما فقط عدد نشان نمی‌دهیم؛ مسیر اجرا و بهبود را می‌دهیم.',
+  'بازار بسته سیستم‌سازی (System Pack): هر بسته سیستم برای یک مسئله مشخص، نقشه، سنجه و اقدام را کنار هم می‌دهد.',
+  'Metrics Library: سنجه‌های انسانی، فنی و سیستمی با تعریف، دامنهٔ هدف و روش اندازه‌گیری شفاف.',
+  'System Tools: ارزیابی بلوغ سیستمی، سازندهٔ OKR، ماتریس تصمیم و ابزارهای نقشه‌برداری برای دیدن جریان‌ها.',
+  'تفاوت با داشبورد و KPI Tool: فقط عدد نمی‌بینید؛ مسیر اجرا، اندازه‌گیری و بهبود مستمر می‌گیرید.',
 ];
 
 const personas = [
   {
     title: 'مدیر محصول و Growth Lead',
     pain: 'داده و گزارش زیاد است، اما تیم روی چند اقدام مشخص همسو نمی‌شود.',
-    promise: 'یک کیت رشد با سنجهٔ واضح، حلقهٔ بازخورد و چک‌لیست اجرا برای اسپرینت بعدی.',
+    promise: 'یک بسته سیستم رشد با سنجهٔ واضح، حلقهٔ بازخورد و چک‌لیست اجرا برای اسپرینت بعدی.',
   },
   {
     title: 'مدیر میانی در سازمان داده‌محور',
@@ -53,65 +53,90 @@ const personas = [
   {
     title: 'مشاور سیستم و دیتا',
     pain: 'وقت برای تولید از صفر ندارید و مشتری تحویل عملی می‌خواهد، نه تئوری.',
-    promise: 'System Kit آماده با Artefact فارسی، نمونه داشبورد و مسیر بهبود برای ارائهٔ سریع.',
+    promise: 'بسته سیستم آماده با Artefact فارسی، نمونه داشبورد و مسیر بهبود برای تحویل سریع.',
   },
 ];
 
 const steps = [
   {
     title: 'شناسایی نوع سیستم',
-    description: 'انسانی، اقتصادی، انسان–ماشین یا سایبر–فیزیکی؛ کیت متناسب با بافت انتخاب می‌شود.',
+    description: 'انسانی، اقتصادی، انسان–ماشین یا سایبر–فیزیکی؛ بسته متناسب با بافت انتخاب می‌شود.',
   },
   {
-    title: 'انتخاب کیت مناسب',
-    description: 'کیت با هدف، ساختار، فرایند، سنجه و بازخورد در اختیار تیم قرار می‌گیرد.',
+    title: 'انتخاب بسته سیستم',
+    description: 'بسته سیستم با هدف، ساختار، فرایند، سنجه و بازخورد در اختیار تیم‌تان قرار می‌گیرد.',
   },
   {
-    title: 'اجرا، سنجه، تکرار',
-    description: 'اکشن‌ها را اجرا می‌کنید، سنجهٔ زنده می‌بینید و چرخهٔ بهبود را می‌بندید.',
+    title: 'اجرا، اندازه‌گیری، تکرار',
+    description: 'اکشن‌ها را اجرا می‌کنید، سنجهٔ زنده می‌بینید و چرخهٔ بهبود و یادگیری را تکرار می‌کنید.',
+  },
+];
+
+const measurementQuotes = [
+  { text: 'What gets measured gets managed.', name: 'Peter Drucker' },
+  {
+    text: 'The most important numbers for management are unknown or unknowable, yet good managers still act on them.',
+    name: 'W. Edwards Deming',
+  },
+  {
+    text: 'You can’t control a system, but you can redesign information and incentives so the system changes its own behavior.',
+    name: 'Donella Meadows',
+  },
+  {
+    text: 'Balanced Scorecard turns strategy into a daily language that people can see, measure, and improve.',
+    name: 'Robert Kaplan',
   },
 ];
 
 const pillars = [
   {
-    title: 'کیت‌ها',
-    description: 'بسته‌های آماده برای طراحی و اجرای سیستم در موضوعاتی مثل مدیریت ریسک، حاکمیت داده، بهره‌وری تیم محصول.',
+    title: 'بسته‌های سیستم‌سازی',
+    description:
+      'برای هر مسئله مدیریتی، یک بسته سیستم می‌گیرید: نقشه سیستم، نقش‌ها و مسیر اقدام. به‌جای شروع از صفر، از یک مدل تست‌شده شروع می‌کنید.',
     href: '/kits',
+    cta: 'دیدن نمونه بسته‌ها',
   },
   {
-    title: 'سنجه‌ها',
-    description: 'کتابخانه‌ی سنجه‌های انسانی، فنی و سیستمی با تعریف، دامنه‌ی هدف و نحوه‌ی اندازه‌گیری.',
+    title: 'سنجه‌ها و شاخص‌ها',
+    description:
+      'کتابخانه‌ای از سنجه‌های انسانی، فنی و سیستمی؛ کمک می‌کند KPIهای واقعی بسازید و از متریک‌های فانتزی (Vanity) فاصله بگیرید.',
     href: '/metrics',
+    cta: 'دیدن مثال سنجه‌ها',
   },
   {
-    title: 'ابزارها',
-    description: 'ابزارهایی مثل ارزیابی بلوغ سیستمی، سازنده‌ی OKR و ماتریس تصمیم برای کمک به انتخاب‌های بهتر.',
+    title: 'ابزارهای اندازه‌گیری و تصمیم',
+    description:
+      'ابزارهایی مثل ارزیابی بلوغ سیستمی، ماتریس‌های ریسک و OKR Board؛ تا سنجه‌ها فقط روی اسلاید نمانند و وارد تصمیم‌های روزانه شوند.',
     href: '/tools',
+    cta: 'دیدن ابزارهای ارزیابی',
   },
 ];
 
 const outputs = [
   {
-    title: 'System Kit آماده',
-    description: 'مثلاً «مدیریت ریسک پروژه»: هدف، ساختار جلسات، فرایند هشدار و اقدام، سنجهٔ کنترل ریسک.',
-    badge: 'نمونه کیت',
+    title: 'نقشهٔ سیستم',
+    description:
+      'سیستم را روی یک صفحه می‌بینید؛ حلقه‌ها، گره‌ها و عوامل اصلی. این نقشه می‌شود زبان مشترک جلسه بعدی شما.',
+    badge: 'زبان مشترک',
   },
   {
-    title: 'Metric با دامنهٔ هدف',
-    description: 'تعریف Metric، دامنهٔ مطلوب، سیگنال خطر و روش جمع‌آوری داده برای تیم محصول.',
-    badge: 'نمونه سنجه',
+    title: 'برد سنجه‌ها',
+    description:
+      'لیستی شفاف از سنجه‌های مهم، با تعریف، هدف و منبع داده. می‌دانید چه چیزی را باید اندازه بگیرید و چه چیزهایی فقط سر و صدا هستند.',
+    badge: 'تعریف سنجه',
   },
   {
-    title: 'Snapshot داشبورد',
-    description: 'یک نمای ساده از وضعیت سیستم + توصیهٔ بعدی تا جلسهٔ بعدی تصمیم شفاف باشد.',
-    badge: 'نمونه گزارش',
+    title: 'چرخهٔ بازخورد و یادگیری',
+    description:
+      'برنامه‌ای ساده برای مرور دوره‌ای داده‌ها و تصمیم‌ها؛ تا سیستم‌تان هر ماه کمی بهتر شود، نه فقط گزارش‌ها بیشتر شوند.',
+    badge: 'بهبود مستمر',
   },
 ];
 
 const systemMap = [
   'دسته‌بندی بر اساس نوع سیستم: انسانی، اقتصادی، انسان–ماشین، سایبر–فیزیکی، پیچیده‌سازگار.',
   'سطح‌بندی بر اساس مقیاس: خرد (تیم)، میانی (واحد)، کلان (سازمان/شبکه).',
-  'هر کیت دقیقاً می‌گوید برای کدام نوع و مقیاس طراحی شده و چه سنجه‌ای را پایش می‌کند.',
+  'هر بسته سیستم دقیقاً می‌گوید برای کدام نوع و مقیاس طراحی شده و چه سنجه‌ای را پایش می‌کند.',
 ];
 
 const listMarker = 'relative pr-4 before:absolute before:right-0 before:top-2 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent';
@@ -155,30 +180,40 @@ export default function LandingPage() {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="space-y-5 text-right lg:max-w-2xl">
               <p className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-xs text-accent shadow-glass">
-                systembazar | بازار کیت‌های سیستم‌سازی در موج پنجم
+                systembazar | بازار بسته‌های سیستم‌سازی در موج پنجم
               </p>
               <h1 id="hero-title" className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
-                سیستم بساز، نه فقط داشبورد.
+                سیستم زنده بساز، نه ابزارِ بیشتر.
               </h1>
-              <p className="text-base leading-relaxed text-slate-200 sm:text-lg">
-                systembazar بازار System Kit، Metric و Tool است تا تیم‌های ایرانی در عصر طغیان داده‌ها از حدس و گزارش‌زدگی عبور کنند و یک سیستم زنده، قابل‌مشاهده و قابل‌اندازه‌گیری بسازند.
-              </p>
-              <p className="text-sm leading-relaxed text-slate-300">
-                مخاطب ما: مدیران محصول، Growth Leadها و مشاوران سیستم که می‌خواهند تصمیم را از «حس» به «سیستم» تبدیل کنند.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => scrollTo('how-it-works')}
-                  className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-accent/30 transition hover:bg-accent-soft"
-                >
-                  شروع ارزیابی سیستم
-                </button>
-                <button
-                  onClick={() => scrollTo('kits')}
-                  className="rounded-full border border-accent/40 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-accent hover:bg-accent/10"
-                >
-                  دیدن کیت‌ها
-                </button>
+              <div className="space-y-2 text-base leading-relaxed text-slate-200 sm:text-lg">
+                <p>
+                  systembazar بازارِ بسته‌های سیستم‌سازی (System Pack)، سنجه‌ها و ابزارهای ارزیابی است.
+                </p>
+                <p>
+                  برای هر مسئله مدیریتی، به تیم‌تان یک بسته سیستم می‌دهد: نقشه سیستم، شاخص‌های اندازه‌گیری و چرخه بازخورد.
+                </p>
+                <p>
+                  نتیجه؟ تصمیم‌گیری شفاف در عصر طغیان داده‌ها؛ نه از روی حدس، بلکه از روی اندازه‌گیری.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => scrollTo('how-it-works')}
+                    className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-accent/30 transition hover:bg-accent-soft"
+                  >
+                    شروع ارزیابی رایگان سیستم
+                  </button>
+                  <button
+                    onClick={() => scrollTo('kits')}
+                    className="rounded-full border border-accent/40 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-accent hover:bg-accent/10"
+                  >
+                    دیدن نمونه بسته‌ها
+                  </button>
+                </div>
+                <p className="text-xs leading-relaxed text-slate-300">
+                  کمتر از ۵ دقیقه، بدون نیاز به کارت بانکی، یک Snapshot از وضعیت سیستم تیم‌تان بگیرید.
+                </p>
               </div>
               <div className="flex flex-wrap gap-3 text-xs text-slate-300">
                 {heroHighlights.map((item) => (
@@ -202,7 +237,7 @@ export default function LandingPage() {
                 </div>
                 <div className="rounded-2xl border border-slate-800/60 bg-black/30 p-4 shadow-inner">
                   <p className="text-xs text-slate-400">ساختار و فرایند</p>
-                  <p className="text-base font-semibold text-white">کیت آماده + نقش‌ها + اتوماسیون سبک</p>
+                  <p className="text-base font-semibold text-white">بسته سیستم + نقش‌ها + اتوماسیون سبک</p>
                 </div>
                 <div className="rounded-2xl border border-slate-800/60 bg-black/30 p-4 shadow-inner">
                   <p className="text-xs text-slate-400">بازخورد</p>
@@ -241,9 +276,9 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mb-6 space-y-3 text-right">
             <p className="text-sm font-semibold text-accent">systembazar دقیقاً چیست؟</p>
-            <h2 className="text-3xl font-bold text-white">بازار System Kits + Metrics + Tools</h2>
+            <h2 className="text-3xl font-bold text-white">بازار بسته سیستم + سنجه + ابزار ارزیابی</h2>
             <p className="max-w-3xl text-sm leading-relaxed text-slate-200">
-              systembazar نرم‌افزار حسابداری یا ERP نیست؛ ما یک بازار کیت‌های سیستم‌سازی هستیم تا تیم‌ها در موج پنج، سیستم را طراحی، اجرا و پایش کنند.
+              systembazar نرم‌افزار حسابداری یا ERP نیست؛ بازار بسته‌های سیستم‌سازی (System Pack) است تا تیم‌تان در موج پنج، سیستم را طراحی، اندازه‌گیری و پایش کند.
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
@@ -324,11 +359,34 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section id="measurement" className="bg-surface/90 py-14">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 space-y-3 text-right">
+            <p className="text-sm font-semibold text-accent">چرا اندازه‌گیری، سیستم عصبی سیستم‌هاست؟</p>
+            <h2 className="text-3xl font-bold text-white">اگر نمی‌بینید و نمی‌سنجید، فقط حدس می‌زنید.</h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-slate-200">
+              سیستم بدون سنجه، مثل بدن بدون حواس است. systembazar کمک می‌کند قبل از تصمیم، سیستم‌تان را ببینید، اندازه‌گیری کنید و از حلقه‌های بازخورد یاد بگیرید.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {measurementQuotes.map((quote) => (
+              <div
+                key={quote.name}
+                className="flex flex-col gap-3 rounded-2xl border border-slate-800/70 bg-black/30 p-5 text-right shadow-inner transition hover:border-accent/40 hover:bg-black/40"
+              >
+                <p className="text-base leading-relaxed text-slate-100">{quote.text}</p>
+                <span className="text-xs text-slate-400">{quote.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="kits" className="bg-background py-14">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 space-y-3 text-right">
             <p className="text-sm font-semibold text-accent">سه ستون systembazar</p>
-            <h2 className="text-3xl font-bold text-white">کیت‌ها + سنجه‌ها + ابزارها</h2>
+            <h2 className="text-3xl font-bold text-white">سه ستون systembazar: بسته سیستم + سنجه‌ها + ابزارهای اندازه‌گیری</h2>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {pillars.map((pillar) => (
@@ -341,7 +399,7 @@ export default function LandingPage() {
                   href={pillar.href}
                   className="mt-6 inline-flex w-fit items-center justify-center rounded-full border border-accent/40 px-4 py-2 text-xs font-semibold text-accent transition hover:border-accent hover:bg-accent/10"
                 >
-                  دیدن بیشتر
+                  {pillar.cta ?? 'دیدن بیشتر'}
                 </a>
               </div>
             ))}
@@ -353,7 +411,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 space-y-3 text-right">
             <p className="text-sm font-semibold text-accent">نمونه خروجی</p>
-            <h2 className="text-3xl font-bold text-white">خروجی‌های واقعی systembazar چه شکلی‌اند؟</h2>
+            <h2 className="text-3xl font-bold text-white">بعد از کار با systembazar، چه چیزهایی یاد می‌گیرید و می‌سازید؟</h2>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {outputs.map((output) => (
@@ -362,7 +420,18 @@ export default function LandingPage() {
                   <span className="text-lg font-semibold text-white">{output.title}</span>
                   <span className="rounded-full bg-accent/15 px-3 py-1 text-xs text-accent">{output.badge}</span>
                 </div>
-                <div className="mb-4 h-32 rounded-2xl border border-dashed border-accent/30 bg-black/30" aria-hidden />
+                <div className="mb-4 rounded-2xl border border-dashed border-accent/30 bg-black/30 p-4" aria-hidden>
+                  <div className="mb-3 h-2 w-24 rounded-full bg-accent/50" />
+                  <div className="mb-2 flex gap-2">
+                    <div className="h-16 w-full rounded-xl border border-accent/20 bg-white/5" />
+                    <div className="h-16 w-14 rounded-xl border border-accent/20 bg-white/5" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-10 rounded-full bg-accent/40" />
+                    <div className="h-2 w-20 rounded-full bg-accent-soft/60" />
+                    <div className="h-2 w-8 rounded-full bg-slate-600/70" />
+                  </div>
+                </div>
                 <p className="text-sm leading-relaxed text-slate-200">{output.description}</p>
               </div>
             ))}
@@ -374,9 +443,9 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mb-6 space-y-3 text-right">
             <p className="text-sm font-semibold text-accent">نقشهٔ سیستم‌ها در systembazar</p>
-            <h2 className="text-3xl font-bold text-white">هر کیت دقیقاً برای کدام سیستم طراحی شده است</h2>
+            <h2 className="text-3xl font-bold text-white">هر بسته سیستم دقیقاً برای کدام سیستم طراحی شده است</h2>
             <p className="max-w-3xl text-sm leading-relaxed text-slate-200">
-              برای هر System Kit، نوع سیستم، مقیاس و سنجه‌های کنترل مشخص است تا بدانید دقیقاً کجا و چگونه باید اجرا شود.
+              برای هر بسته سیستم، نوع سیستم، مقیاس و سنجه‌های کنترل مشخص است تا بدانید کجا اجرا و چگونه اندازه‌گیری کنید.
             </p>
           </div>
           <ul className="grid gap-3 md:grid-cols-3">
@@ -395,7 +464,7 @@ export default function LandingPage() {
         <div className="relative z-10 mx-auto max-w-5xl px-4 text-right sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white">در موج پنج، مزیت رقابتی = سیستم زنده، نه ابزار بیشتر.</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-200">
-            اگر می‌خواهید به‌جای آتش‌نشانی روزمره، سیستم‌های آرام و قابل‌پیش‌بینی بسازید، از همین‌جا شروع کنید. systembazar به شما کیت، سنجه و ابزار می‌دهد تا تصمیم‌ها سریع و شفاف شوند.
+            اگر می‌خواهید به‌جای آتش‌نشانی روزمره، سیستم‌های آرام و قابل‌پیش‌بینی بسازید، از همین‌جا شروع کنید. systembazar به تیم‌تان بسته سیستم، سنجه و ابزار می‌دهد تا تصمیم‌ها سریع و شفاف شوند.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button
@@ -408,7 +477,7 @@ export default function LandingPage() {
               onClick={() => scrollTo('kits')}
               className="rounded-full border border-accent/40 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-accent hover:bg-accent/10"
             >
-              گشت‌وگذار در کیت‌ها
+              دیدن بسته‌ها
             </button>
           </div>
         </div>
