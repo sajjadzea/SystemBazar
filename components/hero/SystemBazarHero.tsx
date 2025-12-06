@@ -77,9 +77,9 @@ const particlesOptions: ISourceOptions = {
 
 export default function SystemBazarHero() {
   const steps = [
-    'وضع فعلی سیستم‌ات را بسنج',
-    'کیت مناسب سناریوی خودت را انتخاب کن',
-    'فرایندها و سنجه‌ها را بچین و اجرا کن',
+    'وضع فعلی سیستم‌تان را بسنجید و ببینید',
+    'بسته سیستم‌سازی (System Pack) متناسب سناریوی‌تان را انتخاب کنید',
+    'فرایند و سنجه را بچینید، اجرا کنید و از بازخورد یاد بگیرید',
   ];
 
   return (
@@ -99,12 +99,12 @@ export default function SystemBazarHero() {
 
         <div className="space-y-4">
           <h1 className="text-3xl font-bold leading-tight text-slate-50 sm:text-4xl lg:text-5xl">
-            سیستم‌بازار؛ کیت‌ها و سنجه‌های آماده برای سیستم‌سازی کسب‌وکارهای ایرانی
+            سیستم‌بازار؛ بسته سیستم‌سازی (System Pack) و سنجه‌های آماده برای کسب‌وکار ایرانی
           </h1>
 
           <p className="max-w-2xl text-sm leading-relaxed text-slate-300 ml-auto">
-            اگر هنوز کسب‌وکارت با شهود و آتش‌نشانی پیش می‌رود، systembazar کمک می‌کند آن را به یک سیستم قابل‌تکرار و قابل‌اندازه‌گیری تبدیل کنی؛
-            با کیت‌های سیستم‌سازی، کتابخانه سنجه‌ها و ابزارهای تعاملی تصمیم‌گیری، مخصوص فضای اقتصادی ایران.
+            اگر هنوز کارتان با حدس و آتش‌نشانی پیش می‌رود، systembazar کمک می‌کند سیستم را ببینید و با سنجهٔ درست بسنجید.
+            با بسته‌های سیستم‌سازی، کتابخانهٔ سنجه‌ها و ابزارهای تعاملی تصمیم‌گیری مخصوص اقتصاد ایران، تصمیم‌های شفاف می‌گیرید.
           </p>
         </div>
 
@@ -120,12 +120,12 @@ export default function SystemBazarHero() {
             href="/kits"
             className="rounded-full border border-slate-600 px-6 py-2 text-sm font-semibold text-slate-100 hover:border-sky-400 hover:text-sky-200 transition"
           >
-            دیدن همه کیت‌ها
+            دیدن همه بسته‌های سیستم
           </Link>
         </div>
 
         <div className="mt-4 flex flex-wrap justify-end gap-2 text-[11px] text-slate-400">
-          <span className="rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1">کیت‌های سیستم‌سازی</span>
+          <span className="rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1">بسته‌های سیستم‌سازی</span>
           <span className="rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1">کتابخانهٔ سنجه‌ها</span>
           <span className="rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1">ابزارهای تصمیم و تشخیص</span>
         </div>

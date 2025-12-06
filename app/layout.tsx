@@ -4,8 +4,8 @@ import React from 'react';
 import SiteLayout from '@/components/layout/SiteLayout';
 
 export const metadata: Metadata = {
-  title: 'سیستم‌بازار – بازار کیت‌ها، سنجه‌ها و ابزارهای سیستم‌سازی',
-  description: 'SystemBazar – سیستم‌سازی برای ایران با کیت‌ها، سنجه‌ها و ابزارهای سیستمی.',
+  title: 'سیستم‌بازار – بازار بسته‌های سیستم‌سازی (System Pack)، سنجه‌ها و ابزارهای اندازه‌گیری',
+  description: 'SystemBazar – دیدن سیستم، سنجش شفاف و ابزارهای تصمیم‌یار برای تیم‌های ایرانی.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

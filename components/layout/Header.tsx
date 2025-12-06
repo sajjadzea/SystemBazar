@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 
 const navItems = [
-  { href: '/kits', label: 'کیت‌ها' },
+  { href: '/kits', label: 'بسته‌های سیستم' },
   { href: '/metrics', label: 'سنجه‌ها' },
   { href: '/tools', label: 'ابزارها' },
   { href: '/system-theory', label: 'نظریه سیستم' },
